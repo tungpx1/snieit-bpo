@@ -1,5 +1,4 @@
-.env.docker
-.couscous
+cous
 .DS_Store
 .env
 .env.testing
