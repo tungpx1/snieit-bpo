@@ -33,6 +33,11 @@ class Helper
         }
     }
 
+    public static function to_multiply($x1, $x2)
+    {
+        return $x1*$x2;
+    }
+
     public static function parseEscapedMarkedownInline($str = null)
     {
         $Parsedown = new \Parsedown();

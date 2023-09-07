@@ -364,6 +364,8 @@ return [
     'asset_count'           => 'Asset Count',
     'accessories_count'     => 'Accessories Count',
     'consumables_count'     => 'Consumables Count',
+    'qty_checked'           => 'QTY Checked',
+    'each_cost'           => 'Each Consumables Cost',
     'components_count'      => 'Components Count',
     'licenses_count'        => 'Licenses Count',
     'notification_error'    => 'Error:',

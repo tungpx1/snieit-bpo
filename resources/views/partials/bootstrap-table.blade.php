@@ -746,6 +746,19 @@
         return 'not an array';
     }
 
+    function sumFormatter2(data) {
+        if (Array.isArray(data)) {
+            var field = this.field;
+            var total_sum = data.reduce(function(sum, row) {
+                const x = row?.[3] || 1
+                return (sum) + (x*cleanFloat(row[field]) || 0);
+            }, 0);
+            
+            return numberWithCommas(total_sum.toFixed(2));
+        }
+        return 'not an array';
+    }
+
     function sumFormatterQuantity(data){
         if(Array.isArray(data)) {
             

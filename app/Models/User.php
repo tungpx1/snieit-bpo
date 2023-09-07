@@ -303,9 +303,23 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
+    // public function consumables()
+    // {
+    //     return $this->belongsToMany(\App\Models\Consumable::class, 'consumables_users', 'assigned_to', 'consumable_id')->withPivot('id','created_at','note')->withTrashed();
+    // }
+
+
     public function consumables()
     {
-        return $this->belongsToMany(\App\Models\Consumable::class, 'consumables_users', 'assigned_to', 'consumable_id')->withPivot('id','created_at','note')->withTrashed();
+        return $this->belongsToMany(\App\Models\Consumable::class, 'consumables_users', 'assigned_to', 'consumable_id')->withPivot('id', 'qty_checkedout', 'created_at', 'note');
+    }
+    public function getConsumableCost()
+    {
+        $cost = 0;
+        foreach ($this->consumables as $consumable) {
+            $cost += $consumable->pivot->qty_checkedout * $consumable->purchase_cost;
+        }
+        return $cost;
     }
 
     /**

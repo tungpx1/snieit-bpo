@@ -843,8 +843,10 @@
               <thead>
                 <tr>
                   <th class="col-md-3">{{ trans('general.name') }}</th>
-                  <th class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                  <th class="col-md-2" data-footer-formatter="sumFormatter2" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
                   <th class="col-md-2">{{ trans('general.date') }}</th>
+                  <th class="col-md-3">{{ trans('general.qty_checked') }}</th>
+                  <th class="col-md-4 each-cost-column">{{ trans('general.each_cost') }}</th>
                     <th class="col-md-5">{{ trans('general.notes') }}</th>
                 </tr>
               </thead>
@@ -852,10 +854,10 @@
                 @foreach ($user->consumables as $consumable)
                 <tr>
                   <td>{!! $consumable->present()->nameUrl() !!}</td>
-                  <td>
-                    {!! Helper::formatCurrencyOutput($consumable->purchase_cost) !!}
-                  </td>
+                  <td>{!! Helper::formatCurrencyOutput($consumable->purchase_cost) !!}</td>
                   <td>{{ Helper::getFormattedDateObject($consumable->pivot->created_at, 'datetime',  false) }}</td>
+                  <td>{{ $consumable->pivot->qty_checkedout }}</td>
+                  <td>{{Helper::formatCurrencyOutput(Helper::to_multiply($consumable->purchase_cost, $consumable->pivot->qty_checkedout)) }}</td>
                   <td>{{ $consumable->pivot->note }}</td>
                 </tr>
                 @endforeach
