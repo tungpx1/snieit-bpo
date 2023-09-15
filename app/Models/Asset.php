@@ -340,6 +340,8 @@ class Asset extends Depreciable
             $originalValues['action_date'] = date('Y-m-d H:i:s');
         }
 
+        $this->status_id = 5; // set status label to deployed
+
         if ($this->save()) {
             if (is_int($admin)) {
                 $checkedOutBy = User::findOrFail($admin);
