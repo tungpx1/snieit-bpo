@@ -45,7 +45,12 @@ services:
 
 
 volumes:
-  db: {}
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/tungpx/dbsnipeit
+      o: bind
   logs:
     driver: local
     driver_opts:

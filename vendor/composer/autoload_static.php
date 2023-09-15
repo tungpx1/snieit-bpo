@@ -289,8 +289,8 @@ class ComposerStaticInitb3a1f98fc8de7193523f725db392ed91
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'enshrined\\svgSanitize\\' => 
         array (
@@ -502,8 +502,8 @@ class ComposerStaticInitb3a1f98fc8de7193523f725db392ed91
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -611,8 +611,8 @@ class ComposerStaticInitb3a1f98fc8de7193523f725db392ed91
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri-interfaces/src',
-            1 => __DIR__ . '/..' . '/league/uri/src',
+            0 => __DIR__ . '/..' . '/league/uri/src',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -821,10 +821,10 @@ class ComposerStaticInitb3a1f98fc8de7193523f725db392ed91
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
+            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
             1 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
             2 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
-            3 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+            3 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
         ),
         'Dflydev\\DotAccessData\\' => 
         array (
@@ -2797,11 +2797,6 @@ class ComposerStaticInitb3a1f98fc8de7193523f725db392ed91
         'CreateManufacturersTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_13_075347_create_manufacturers_table.php',
         'CreateModelsTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_13_075318_create_models_table.php',
         'CreateNewLicensesTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_25_033131_create_new_licenses_table.php',
-        'CreateOauthAccessTokensTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_01_000002_create_oauth_access_tokens_table.php',
-        'CreateOauthAuthCodesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_01_000001_create_oauth_auth_codes_table.php',
-        'CreateOauthClientsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_01_000004_create_oauth_clients_table.php',
-        'CreateOauthPersonalAccessClientsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_01_000005_create_oauth_personal_access_clients_table.php',
-        'CreateOauthRefreshTokensTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_01_000003_create_oauth_refresh_tokens_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2016_02_19_073625_create_password_resets_table.php',
         'CreateSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_17_055126_create_settings_table.php',
         'CreateStatusLabels' => __DIR__ . '/../..' . '/database/migrations/2013_11_20_130248_create_status_labels.php',
