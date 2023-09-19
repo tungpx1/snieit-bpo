@@ -24,7 +24,7 @@
     <div class="box box-default">
       @if ($accessory->id)
         <div class="box-header with-border">
-          <h2 class="box-title">{{ $accessory->name }}</h2>
+          <h2 class="box-title">{{ $accessory->name }}({{ $accessory->numRemaining()  }} {{ trans('admin/accessories/general.remaining') }})</h2>
         </div><!-- /.box-header -->
       @endif
 
@@ -50,9 +50,10 @@
           @endif
 
           <!-- User -->
+          @include ('partials.forms.checkout-selector', ['user_select' => 'true', 'location_select' => 'true'])
 
           @include ('partials.forms.edit.user-select', ['translated_name' => trans('general.select_user'), 'fieldname' => 'assigned_to'])
-
+          @include ('partials.forms.edit.location-select', ['translated_name' => trans('general.location'), 'fieldname' => 'assigned_location', 'style' => 'display:none;', 'required'=>'true'])
 
              @if ($accessory->requireAcceptance() || $accessory->getEula() || ($snipeSettings->webhook_endpoint!=''))
                  <div class="form-group notification-callout">
@@ -79,6 +80,17 @@
                      </div>
                  </div>
              @endif
+
+            <!-- Checkout QTY -->
+         <div class="form-group {{ $errors->has('qty') ? 'error' : '' }} ">
+              <label for="qty" class="col-md-3 control-label">{{ trans('general.qty') }}</label>
+              <div class="col-md-7 col-sm-12 required">
+                  <div class="col-md-2" style="padding-left:0px">
+                    <input class="form-control" type="number" name="qty" id="qty" value="1" min="1" max="{{$accessory->numRemaining()}}" />
+                  </div>
+              </div>
+              {!! $errors->first('qty', '<div class="col-md-8 col-md-offset-3"><span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span></div>') !!}
+          </div>
           <!-- Note -->
           <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
             <label for="note" class="col-md-3 control-label">{{ trans('admin/hardware/form.notes') }}</label>

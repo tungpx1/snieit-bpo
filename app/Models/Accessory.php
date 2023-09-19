@@ -253,9 +253,21 @@ class Accessory extends SnipeModel
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
+    // public function users()
+    // {
+    //     return $this->belongsToMany(\App\Models\User::class, 'accessories_users', 'accessory_id', 'assigned_to')->withPivot('id', 'created_at', 'note')->withTrashed();
+    // }
+
+    // public function users2()
+    // {
+    //     return $this->belongsToMany(\App\Models\User::class, 'accessories_users')->withPivot('id', 'qty_checkedout', 'created_at', 'assigned_to', 'note');
+    // }
+
+
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'accessories_users', 'accessory_id', 'assigned_to')->withPivot('id', 'created_at', 'note')->withTrashed();
+        return $this->belongsToMany(User::class, 'accessories_users', 'accessory_id', 'assigned_to')
+            ->withPivot('id', 'qty_checkedout', 'created_at', 'note');
     }
 
     /**
@@ -340,13 +352,17 @@ class Accessory extends SnipeModel
      * @since [v3.0]
      * @return int
      */
+
+     public function numCheckedOut()
+     {
+         return $this->users->sum('pivot.qty_checkedout');
+     }
+ 
+
     public function numRemaining()
     {
-        $checkedout = $this->users_count;
-        $total = $this->qty;
-        $remaining = $total - $checkedout;
+        return $this->qty - $this->numCheckedOut(); 
 
-        return (int) $remaining;
     }
 
     /**

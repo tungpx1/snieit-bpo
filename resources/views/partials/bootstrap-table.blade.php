@@ -746,7 +746,20 @@
         return 'not an array';
     }
 
-    function sumFormatter2(data) {
+    function sumCostAccessories(data) {
+        if (Array.isArray(data)) {
+            var field = this.field;
+            var total_sum = data.reduce(function(sum, row) {
+                const x = row?.[2] || 1
+                return (sum) + (x*cleanFloat(row[field]) || 0);
+            }, 0);
+            
+            return numberWithCommas(total_sum.toFixed(2));
+        }
+        return 'not an array';
+    }
+
+    function sumCostConsumables(data) {
         if (Array.isArray(data)) {
             var field = this.field;
             var total_sum = data.reduce(function(sum, row) {

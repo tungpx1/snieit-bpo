@@ -33,12 +33,15 @@ class Location extends SnipeModel
         'country'       => 'min:2|max:191|nullable',
         'zip'           => 'max:10|nullable',
         'manager_id'    => 'exists:users,id|nullable',
+        'company_id'    => 'exists:companies,id|nullable',
         'parent_id'     => 'non_circular:locations,id',
+
     ];
 
     protected $casts = [
         'parent_id'     => 'integer',
         'manager_id'    => 'integer',
+        'company_id'    => 'integer',
     ];
 
     /**
@@ -71,6 +74,7 @@ class Location extends SnipeModel
         'ldap_ou',
         'currency',
         'manager_id',
+        'company_id',
         'image',
     ];
     protected $hidden = ['user_id'];
@@ -219,6 +223,11 @@ class Location extends SnipeModel
     public function manager()
     {
         return $this->belongsTo(\App\Models\User::class, 'manager_id');
+    }
+
+    public function companies()
+    {
+        return $this->belongsTo(\App\Models\Company::class, 'company_id');
     }
 
 

@@ -178,6 +178,16 @@ class LocationPresenter extends Presenter
             ],
 
             [
+                'field' => 'company',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.company'),
+                'visible' => false,
+                'formatter' => 'companiesLinkObjFormatter',
+            ],
+
+            [
                 'field' => 'created_at',
                 'searchable' => true,
                 'sortable' => true,

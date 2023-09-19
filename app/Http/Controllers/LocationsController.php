@@ -78,6 +78,7 @@ class LocationsController extends Controller
         $location->zip = $request->input('zip');
         $location->ldap_ou = $request->input('ldap_ou');
         $location->manager_id = $request->input('manager_id');
+        $location->company_id = $request->input('company_id');
         $location->user_id = Auth::id();
         $location->phone = request('phone');
         $location->fax = request('fax');
@@ -145,6 +146,8 @@ class LocationsController extends Controller
         $location->fax = request('fax');
         $location->ldap_ou = $request->input('ldap_ou');
         $location->manager_id = $request->input('manager_id');
+        $location->company_id = $request->input('company_id');
+
 
         $location = $request->handleImages($location);
 

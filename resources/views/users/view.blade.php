@@ -793,9 +793,11 @@
                     }'>
               <thead>
                 <tr>
-                    <th class="col-md-5">{{ trans('general.name') }}</th>
+                    <th class="col-md-3">{{ trans('general.name') }}</th>
+                    <th class="col-md-2" data-footer-formatter="sumCostAccessories" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th class="col-md-3">{{ trans('general.qty_checked') }}</th>
+                    <th class="col-md-4 each-cost-column">{{ trans('general.each_cost') }}</th>
                     <th class-="col-md-5" data-fieldname="note">{{ trans('general.notes') }}</th>
-                    <th class="col-md-1" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
                     <th class="col-md-1 hidden-print">{{ trans('general.action') }}</th>
                 </tr>
               </thead>
@@ -803,10 +805,10 @@
                   @foreach ($user->accessories as $accessory)
                   <tr>
                     <td>{!!$accessory->present()->nameUrl()!!}</td>
+                      <td>{!! Helper::formatCurrencyOutput($accessory->purchase_cost) !!}</td>
+                      <td>{{ $accessory->pivot->qty_checkedout }}</td>
+                      <td>{{Helper::formatCurrencyOutput(Helper::to_multiply($accessory->purchase_cost, $accessory->pivot->qty_checkedout)) }}</td>
                       <td>{!! $accessory->pivot->note !!}</td>
-                      <td>
-                      {!! Helper::formatCurrencyOutput($accessory->purchase_cost) !!}
-                      </td>
                     <td class="hidden-print">
                       @can('checkin', $accessory)
                         <a href="{{ route('accessories.checkin.show', array('accessoryID'=> $accessory->pivot->id, 'backto'=>'user')) }}" class="btn btn-primary btn-sm hidden-print">{{ trans('general.checkin') }}</a>
@@ -843,7 +845,7 @@
               <thead>
                 <tr>
                   <th class="col-md-3">{{ trans('general.name') }}</th>
-                  <th class="col-md-2" data-footer-formatter="sumFormatter2" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                  <th class="col-md-2" data-footer-formatter="sumCostConsumables" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
                   <th class="col-md-2">{{ trans('general.date') }}</th>
                   <th class="col-md-3">{{ trans('general.qty_checked') }}</th>
                   <th class="col-md-4 each-cost-column">{{ trans('general.each_cost') }}</th>

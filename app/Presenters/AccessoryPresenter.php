@@ -27,7 +27,7 @@ class AccessoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('admin/hardware/table.image'),
-                'visible' => true,
+                'visible' => false,
                 'formatter' => 'imageFormatter',
             ], [
                 'field' => 'company',
@@ -35,7 +35,7 @@ class AccessoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('admin/companies/table.title'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'companiesLinkObjFormatter',
             ], [
                 'field' => 'name',
@@ -86,7 +86,7 @@ class AccessoryPresenter extends Presenter
                 'field' => 'remaining_qty',
                 'searchable' => false,
                 'sortable' => false,
-                'visible' => false,
+                'visible' => true,
                 'title' => trans('admin/accessories/general.remaining'),
             ],[
                 'field' => 'users_count',

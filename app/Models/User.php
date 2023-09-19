@@ -290,11 +290,18 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * @since [v2.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
+    // public function accessories()
+    // {
+    //     return $this->belongsToMany(\App\Models\Accessory::class, 'accessories_users', 'assigned_to', 'accessory_id')
+    //         ->withPivot('id', 'created_at', 'note')->withTrashed()->orderBy('accessory_id');
+    // }
+
     public function accessories()
     {
-        return $this->belongsToMany(\App\Models\Accessory::class, 'accessories_users', 'assigned_to', 'accessory_id')
-            ->withPivot('id', 'created_at', 'note')->withTrashed()->orderBy('accessory_id');
+        return $this->belongsToMany(Accessory::class, 'accessories_users', 'assigned_to', 'accessory_id')
+            ->withPivot('id', 'qty_checkedout', 'created_at', 'note');
     }
+
 
     /**
      * Establishes the user -> consumables relationship

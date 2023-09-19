@@ -849,7 +849,7 @@
                 </section>
 
             </div><!-- /.content-wrapper -->
-            <footer class="main-footer hidden-print">
+            <!-- <footer class="main-footer hidden-print">
 
                 <div class="pull-right hidden-xs">
                     @if ($snipeSettings->version_footer!='off')
@@ -887,7 +887,7 @@
                 <a target="_blank" href="https://snipeitapp.com" rel="noopener">Snipe-IT</a> is open source software,
                 made with <i class="fas fa-heart" style="color: #a94442; font-size: 10px" aria-hidden="true"></i><span
                         class="sr-only">love</span> by <a href="https://twitter.com/snipeitapp" rel="noopener">@snipeitapp</a>.
-            </footer>
+            </footer> -->
 
 
 

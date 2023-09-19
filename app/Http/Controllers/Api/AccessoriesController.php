@@ -195,6 +195,7 @@ class AccessoriesController extends Controller
 
         $accessory_users = $accessory->users;
         $total = $accessory_users->count();
+        // $total = $accessory->numCheckedOut();
 
         if ($total < $offset) {
             $offset = 0;
@@ -212,6 +213,7 @@ class AccessoriesController extends Controller
                                          })
                                          ->get();
             $total = $accessory_users->count();
+            // $total = $accessory->numCheckedOut();
         }
 
         return (new AccessoriesTransformer)->transformCheckedoutAccessory($accessory, $accessory_users, $total);

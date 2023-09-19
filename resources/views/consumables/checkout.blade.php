@@ -23,7 +23,7 @@
             <div class="box-heading">
               <h2 class="box-title">{{ $consumable->name }}  ({{ $consumable->numRemaining()  }}  {{ trans('admin/consumables/general.remaining') }})</h2>
             </div>
-          </div><!-- /.box-header -->
+          </div>
         @endif
 
         <div class="box-body">

@@ -66,13 +66,18 @@ class AccessoryCheckoutController extends Controller
         }
 
         $this->authorize('checkout', $accessory);
+        $quantity = $request->input('qty');
+        if (!isset($quantity) || !ctype_digit((string)$quantity) || $quantity <= 0) {
+            $quantity = 1;
+        }
+
 
         if (!$user = User::find($request->input('assigned_to'))) {
             return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.user_does_not_exist'));
         }
-
+        
         // Make sure there is at least one available to checkout
-        if ($accessory->numRemaining() <= 0){
+        if ($accessory->numRemaining() <= 0 || $quantity > $accessory->numRemaining()){
             return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkout.unavailable'));
         }
 
@@ -85,6 +90,7 @@ class AccessoryCheckoutController extends Controller
             'created_at' => Carbon::now(),
             'user_id' => Auth::id(),
             'assigned_to' => $request->get('assigned_to'),
+            'qty_checkedout' => e($request->input('qty')),
             'note' => $request->input('note'),
         ]);
 
@@ -95,4 +101,8 @@ class AccessoryCheckoutController extends Controller
         // Redirect to the new accessory page
         return redirect()->route('accessories.index')->with('success', trans('admin/accessories/message.checkout.success'));
     }
+
+
+
+
 }

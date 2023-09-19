@@ -308,7 +308,7 @@
               <strong>{{ trans('general.checked_out') }}</strong>
           </div>
           <div class="col-md-9">
-              {{ $accessory->users_count }}
+              {{ $accessory->numCheckedOut() }}
           </div>
       </div>
 </div>
