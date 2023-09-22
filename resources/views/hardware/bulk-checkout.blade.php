@@ -1,8 +1,7 @@
 @extends('layouts/default')
 
 {{-- Page title --}}
-@section('title')
-     {{ trans('admin/hardware/general.bulk_checkout') }}
+@section('title') {{ trans('admin/hardware/general.bulk_checkout') }}
 @parent
 @stop
 
