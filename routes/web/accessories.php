@@ -22,10 +22,22 @@ Route::group(['prefix' => 'accessories', 'middleware' => ['auth']], function () 
         [Accessories\AccessoryCheckinController::class, 'create']
     )->name('accessories.checkin.show');
 
+
+    Route::get(
+        '{accessoryID}/checkin2/{backto?}',
+        [Accessories\AccessoryCheckinController::class, 'create2']
+    )->name('accessories.checkin.show2');
+
     Route::post(
         '{accessoryID}/checkin/{backto?}',
         [Accessories\AccessoryCheckinController::class, 'store']
     )->name('accessories.checkin.store');
+
+
+    Route::post(
+        '{accessoryID}/checkin2/{backto?}',
+        [Accessories\AccessoryCheckinController::class, 'store2']
+    )->name('accessories.checkin.store2');
 
     Route::post(
         '{accessoryId}/upload',

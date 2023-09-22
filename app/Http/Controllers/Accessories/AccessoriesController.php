@@ -220,6 +220,10 @@ class AccessoriesController extends Controller
             return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.assoc_users', ['count'=> $accessory->hasUsers()]));
         }
 
+        if ($accessory->hasLocations() > 0) {
+            return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.assoc_users', ['count'=> $accessory->hasLocations()]));
+        }
+
         if ($accessory->image) {
             try {
                 Storage::disk('public')->delete('accessories'.'/'.$accessory->image);

@@ -73,7 +73,7 @@
                                 {{ trans('general.checkin') }}</button>
                         </div>
 
-
+                        
                 </div> <!-- .box.box-default -->
             </form>
         </div> <!-- .col-md-9-->

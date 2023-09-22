@@ -402,10 +402,52 @@
             } else if (row.available_actions.checkin == true)  {
                 if (row.assigned_to) {
                     return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
-                } else if (row.assigned_pivot_id) {
+                }
+                else if (row.assigned_pivot_id) {
                     return '<a href="{{ config('app.url') }}/' + destination + '/' + row.assigned_pivot_id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
                 }
+            }
 
+        }
+
+
+    }
+
+    var formatters2 = [
+        'accessories'
+    ];
+    for (var i in formatters2) {
+        window[formatters2[i] + 'InOutFormatter2'] = genericCheckinCheckoutFormatter2(formatters2[i]);
+    }
+
+
+    function genericCheckinCheckoutFormatter2(destination) {
+        return function (value,row) {
+
+            // The user is allowed to check items out, AND the item is deployable
+            if ((row.available_actions.checkout == true) && (row.user_can_checkout == true) && ((!row.asset_id) && (!row.assigned_to))) {
+
+                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkout" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+
+            // The user is allowed to check items out, but the item is not able to be checked out
+            } else if (((row.user_can_checkout == false)) && (row.available_actions.checkout == true) && (!row.assigned_to)) {
+
+                // We use slightly different language for assets versus other things, since they are the only
+                // item that has a status label
+                if (destination =='hardware') {
+                    return '<span  data-tooltip="true" title="{{ trans('admin/hardware/general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
+                } else {
+                    return '<span  data-tooltip="true" title="{{ trans('general.undeployable_tooltip') }}"><a class="btn btn-sm bg-maroon disabled">{{ trans('general.checkout') }}</a></span>';
+                }
+
+            // The user is allowed to check items in
+            } else if (row.available_actions.checkin == true)  {
+                if (row.assigned_to) {
+                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
+                }
+                else if (row.assigned_pivot_id) {
+                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.assigned_pivot_id + '/checkin2" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
+                }
             }
 
         }
@@ -426,11 +468,10 @@
 
     }
 
-
-
     var formatters = [
         'hardware',
         'accessories',
+        'accessories2',
         'consumables',
         'components',
         'locations',

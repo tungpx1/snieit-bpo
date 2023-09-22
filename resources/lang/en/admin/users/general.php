@@ -13,6 +13,8 @@ return [
     'filetype_info'     => 'Allowed filetypes are png, gif, jpg, jpeg, doc, docx, pdf, txt, zip, and rar.',
     'history_user'      => 'History for :name',
     'info'				=> 'Info',
+    'checked_to_user'	=> 'Assigned to User',
+    'checked_to_location'	=> 'Assigned to Location',
     'restore_user'		=> 'Click here to restore them.',
     'last_login'        => 'Last Login',
     'ldap_config_text'  => 'LDAP configuration settings can be found Admin > Settings. The (optional) selected location will be set for all imported users.',

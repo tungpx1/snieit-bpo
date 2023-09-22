@@ -219,6 +219,44 @@ class AccessoriesController extends Controller
         return (new AccessoriesTransformer)->transformCheckedoutAccessory($accessory, $accessory_users, $total);
     }
 
+    public function checkedout2($id, Request $request)
+    {
+        $this->authorize('view', Accessory::class);
+    
+        $accessory = Accessory::with('lastCheckout')->findOrFail($id);
+        if (! Company::isCurrentUserHasAccess($accessory)) {
+            return ['total' => 0, 'rows' => []];
+        }
+    
+        $offset = request('offset', 0);
+        $limit = request('limit', 50);
+    
+        $accessory_locations = $accessory->locations;
+        $total = $accessory_locations->count();
+    
+        if ($total < $offset) {
+            $offset = 0;
+        }
+    
+        $accessory_locations = $accessory->locations()->skip($offset)->take($limit)->get();
+    
+        if ($request->filled('search')) {
+            $accessory_locations = $accessory->locations()
+                ->where(function ($query) use ($request) {
+                    $search_str = '%' . $request->input('search') . '%';
+                    $query->where('assigned_to_location', 'like', $search_str) // Thay thế 'name' bằng tên cụ thể của thuộc tính tên địa điểm.
+                          ->orWhere('notes', 'like', $search_str);
+                })
+                ->get();
+            $total = $accessory_locations->count();
+        }
+    
+        return (new AccessoriesTransformer)->transformCheckedoutAccessory2($accessory, $accessory_locations, $total);
+    }
+    
+    
+
+
 
     /**
      * Update the specified resource in storage.

@@ -199,6 +199,15 @@ class Location extends SnipeModel
         return $this->hasMany(\App\Models\Accessory::class, 'location_id');
     }
 
+
+
+    public function assignedAccessories()
+    {
+        return $this->belongsToMany(Accessory::class, 'accessories_locations', 'assigned_to_location', 'accessory_id')
+            ->withPivot('id', 'qty_checkedout', 'created_at', 'notes');
+    }
+
+
     /**
      * Find the parent of a location
      *
@@ -250,7 +259,21 @@ class Location extends SnipeModel
      * @author A. Gianotto <snipe@snipe.net>
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * 
      */
+
+     function getLocationNameFromLocation($location)
+     {
+         // Kiểm tra xem $location có phải là một đối tượng Location không
+         if ($location instanceof Location) {
+             // Trả về tên location tương ứng từ đối tượng $location
+             return $location->name;
+         }
+     
+         // Nếu $location không phải là đối tượng Location, trả về null hoặc giá trị mặc định khác tùy ý
+         return null;
+     }
+
     public function assignedAssets()
     {
         return $this->morphMany(\App\Models\Asset::class, 'assigned', 'assigned_type', 'assigned_to')->withTrashed();

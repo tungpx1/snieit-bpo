@@ -80,7 +80,19 @@
                     </span>
                   </a>
               </li>
-
+              
+              <li>
+                  <a href="#accessories_assigned" data-toggle="tab">
+                    <span class="hidden-lg hidden-md">
+                        <i class="fas fa-keyboard fa-2x" aria-hidden="true"></i>
+                    </span>
+                      <span class="hidden-xs hidden-sm">
+                          {{ trans('admin/locations/message.assigned_accessories') }}
+                          {!! (($location->assignedAccessories) && ($location->assignedAccessories->count() > 0 )) ? '<badge class="badge badge-secondary">'.number_format($location->assignedAccessories->count()).'</badge>' : '' !!}
+                    </span>
+                  </a>
+              </li>
+              
               <li>
                   <a href="#consumables" data-toggle="tab">
                     <span class="hidden-lg hidden-md">
@@ -236,9 +248,6 @@
 
                   </div><!-- /.table-responsive -->
               </div><!-- /.tab-pane -->
-              
-
-
               <div class="tab-pane" id="accessories">
                   <h2 class="box-title">{{ trans('general.accessories') }}</h2>
                   <div class="table table-responsive">
@@ -261,6 +270,58 @@
                               "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                               }'>
                       </table>
+                  </div><!-- /.table-responsive -->
+              </div><!-- /.tab-pane -->
+
+              <div class="tab-pane" id="accessories_assigned">
+                  <h2 class="box-title">{{ trans('admin/locations/message.assigned_accessories') }}</h2>
+                  <div class="table table-responsive">
+                  <table
+                    data-cookie-id-table="userAccessoryTable"
+                    data-id-table="userAccessoryTable"
+                    id="userAccessoryTable"
+                    data-search="true"
+                    data-pagination="true"
+                    data-side-pagination="client"
+                    data-show-columns="true"
+                    data-show-fullscreen="true"
+                    data-show-export="true"
+                    data-show-footer="true"
+                    data-show-refresh="true"
+                    data-sort-order="asc"
+                    data-sort-name="name"
+                    class="table table-striped snipe-table table-hover"
+                    data-export-options='{
+                    "fileName": "export-accessory-{{ str_slug($user->username) }}-{{ date('Y-m-d') }}",
+                    "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","delete","download","icon"]
+                    }'>
+              <thead>
+                <tr>
+                    <th class="col-md-2">{{ trans('general.name') }}</th>
+                    <th class="col-md-3" data-footer-formatter="sumCostAccessories" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th class="col-md-2">{{ trans('general.qty_checked') }}</th>
+                    <th class="col-md-4 each-cost-column">{{ trans('general.each_cost') }}</th>
+                    <th class-="col-md-2" data-fieldname="note">{{ trans('general.notes') }}</th>
+                    <th class="col-md-1 hidden-print">{{ trans('general.action') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                  @foreach ($location->assignedAccessories as $accessory)
+                  <tr>
+                    <td>{!!$accessory->present()->nameUrl()!!}</td>
+                      <td>{!! Helper::formatCurrencyOutput($accessory->purchase_cost) !!}</td>
+                      <td>{{ $accessory->pivot->qty_checkedout }}</td>
+                      <td>{{Helper::formatCurrencyOutput(Helper::to_multiply($accessory->purchase_cost, $accessory->pivot->qty_checkedout)) }}</td>
+                      <td>{!! $accessory->pivot->notes !!}</td>
+                    <td class="hidden-print">
+                      @can('checkin', $accessory)
+                        <a href="{{ route('accessories.checkin.show2', array('accessoryID'=> $accessory->pivot->id, 'backto'=>'location')) }}" class="btn btn-primary btn-sm hidden-print">{{ trans('general.checkin') }}</a>
+                      @endcan
+                    </td>
+                  </tr>
+                  @endforeach
+              </tbody>
+            </table>
                   </div><!-- /.table-responsive -->
               </div><!-- /.tab-pane -->
 

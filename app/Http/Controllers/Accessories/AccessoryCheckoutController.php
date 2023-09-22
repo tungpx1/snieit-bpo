@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Accessories;
 use App\Events\CheckoutableCheckedOut;
 use App\Http\Controllers\Controller;
 use App\Models\Accessory;
+use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -71,32 +72,66 @@ class AccessoryCheckoutController extends Controller
             $quantity = 1;
         }
 
+        $checkoutType = $request->input('checkout_to_type');
 
-        if (!$user = User::find($request->input('assigned_to'))) {
-            return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.user_does_not_exist'));
+        if ($checkoutType === 'user') {
+
+            if (!$user = User::find($request->input('assigned_to'))) {
+                return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.user_does_not_exist'));
+            }
+            
+            // Make sure there is at least one available to checkout
+            if ($accessory->numRemaining() <= 0 || $quantity > $accessory->numRemaining()){
+                return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkout.unavailable'));
+            }
+
+
+            // Update the accessory data
+            $accessory->assigned_to = e($request->input('assigned_to'));
+
+            $accessory->users()->attach($accessory->id, [
+                'accessory_id' => $accessory->id,
+                'created_at' => Carbon::now(),
+                'user_id' => Auth::id(),
+                'assigned_to' => $request->get('assigned_to'),
+                'qty_checkedout' => e($request->input('qty')),
+                'note' => $request->input('note'),
+            ]);
+
+            DB::table('accessories_users')->where('assigned_to', '=', $accessory->assigned_to)->where('accessory_id', '=', $accessory->id)->first();
+            event(new CheckoutableCheckedOut($accessory, $user, Auth::user(), $request->input('note')));
+
+
+        }elseif ($checkoutType === 'location') {
+
+            if (!$location = Location::find($request->input('assigned_location'))) {
+                return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.location_does_not_exist'));
+            }
+            
+
+            if ($accessory->numRemaining() <= 0 || $quantity > $accessory->numRemaining()){
+                return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkout.unavailable'));
+            }
+
+
+            $accessory->assigned_to_location = e($request->input('assigned_location'));
+
+            $accessory->locations()->attach($accessory->id, [
+                'accessory_id' => $accessory->id,
+                'created_at' => Carbon::now(),
+                'user_id' => Auth::id(),
+                'assigned_to_location' => $request->get('assigned_location'),
+                'qty_checkedout' => e($request->input('qty')),
+                'notes' => $request->input('note'),
+            ]);
+
+            DB::table('accessories_locations')->where('assigned_to_location', '=', $accessory->assigned_to_location)->where('accessory_id', '=', $accessory->id)->first();
+            
+            event(new CheckoutableCheckedOut($accessory, $location, Auth::user(), $request->input('note')));
+
         }
         
-        // Make sure there is at least one available to checkout
-        if ($accessory->numRemaining() <= 0 || $quantity > $accessory->numRemaining()){
-            return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkout.unavailable'));
-        }
 
-
-        // Update the accessory data
-        $accessory->assigned_to = e($request->input('assigned_to'));
-
-        $accessory->users()->attach($accessory->id, [
-            'accessory_id' => $accessory->id,
-            'created_at' => Carbon::now(),
-            'user_id' => Auth::id(),
-            'assigned_to' => $request->get('assigned_to'),
-            'qty_checkedout' => e($request->input('qty')),
-            'note' => $request->input('note'),
-        ]);
-
-        DB::table('accessories_users')->where('assigned_to', '=', $accessory->assigned_to)->where('accessory_id', '=', $accessory->id)->first();
-
-        event(new CheckoutableCheckedOut($accessory, $user, Auth::user(), $request->input('note')));
 
         // Redirect to the new accessory page
         return redirect()->route('accessories.index')->with('success', trans('admin/accessories/message.checkout.success'));

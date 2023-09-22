@@ -86,6 +86,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
             ]
         )->name('api.accessories.checkedout');
 
+        Route::get('{accessory}/checkedout2',
+        [
+            Api\AccessoriesController::class, 
+            'checkedout2'
+        ]
+    )->name('api.accessories.checkedout2');
+
         Route::post('{accessory}/checkout',
             [
                 Api\AccessoriesController::class, 
@@ -128,7 +135,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle:api']], functi
 
      
      /**
-      * Categpries API routes
+      * Categories API routes
       */
       Route::group(['prefix' => 'categories'], function () {
         

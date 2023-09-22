@@ -7,6 +7,7 @@ return array(
     'assoc_assets'	 => 'This location is currently associated with at least one asset and cannot be deleted. Please update your assets to no longer reference this location and try again. ',
     'assoc_child_loc'	 => 'This location is currently the parent of at least one child location and cannot be deleted. Please update your locations to no longer reference this location and try again. ',
     'assigned_assets' => 'Assigned Assets',
+    'assigned_accessories' => 'Assigned Accessories',
     'current_location' => 'Current Location',
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Accessories;
 use App\Events\CheckoutableCheckedIn;
 use App\Http\Controllers\Controller;
 use App\Models\Accessory;
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,20 @@ class AccessoryCheckinController extends Controller
         }
 
         $accessory = Accessory::find($accessory_user->accessory_id);
+        $this->authorize('checkin', $accessory);
+
+        return view('accessories/checkin', compact('accessory'))->with('backto', $backto);
+    }
+
+    public function create2($accessoryLocationId = null, $backto = null)
+    {
+        // Check if the accessory exists
+        if (is_null($accessory_location = DB::table('accessories_locations')->find($accessoryLocationId))) {
+            // Redirect to the accessory management page with error
+            return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.not_found'));
+        }
+
+        $accessory = Accessory::find($accessory_location->accessory_id);
         $this->authorize('checkin', $accessory);
 
         return view('accessories/checkin', compact('accessory'))->with('backto', $backto);
@@ -76,4 +91,35 @@ class AccessoryCheckinController extends Controller
         // Redirect to the accessory management page with error
         return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkin.error'));
     }
+
+
+    public function store2(Request $request, $accessoryLocationId = null, $backto = null)
+    {
+        // Check if the accessory exists
+        if (is_null($accessory_location = DB::table('accessories_locations')->find($accessoryLocationId))) {
+            // Redirect to the accessory management page with error
+            return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.does_not_exist'));
+        }
+
+        $accessory = Accessory::find($accessory_location->accessory_id);
+
+        $this->authorize('checkin', $accessory);
+
+        $checkin_at = date('Y-m-d');
+        if ($request->filled('checkin_at')) {
+            $checkin_at = $request->input('checkin_at');
+        }
+
+        // Was the accessory updated?
+        if (DB::table('accessories_locations')->where('id', '=', $accessory_location->id)->delete()) {
+            $return_to = e($accessory_location->assigned_to_location);
+
+            event(new CheckoutableCheckedIn($accessory, Location::find($return_to), Auth::user(), $request->input('note'), $checkin_at));
+
+            return redirect()->route('accessories.show', $accessory->id)->with('success', trans('admin/accessories/message.checkin.success'));
+        }
+        // Redirect to the accessory management page with error
+        return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkin.error'));
+    }
+
 }

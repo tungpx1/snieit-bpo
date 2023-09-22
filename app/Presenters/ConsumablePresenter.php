@@ -20,7 +20,7 @@ class ConsumablePresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.id'),
-                'visible' => false,
+                'visible' => true,
             ],
             [
                 'field' => 'company',
@@ -28,7 +28,7 @@ class ConsumablePresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.company'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'companiesLinkObjFormatter',
             ],
             [
@@ -107,13 +107,13 @@ class ConsumablePresenter extends Presenter
                 'searchable' => true,
                 'sortable' => true,
                 'title' => trans('general.order_number'),
-                'visible' => true,
+                'visible' => false,
             ], [
                 'field' => 'purchase_date',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => trans('general.purchase_date'),
-                'visible' => true,
+                'visible' => false,
                 'formatter' => 'dateDisplayFormatter',
             ], [
                 'field' => 'purchase_cost',

@@ -4,6 +4,7 @@ namespace App\Http\Transformers;
 
 use App\Helpers\Helper;
 use App\Models\Accessory;
+use App\Models\Location;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -39,8 +40,7 @@ class AccessoriesTransformer
             'order_number' => ($accessory->order_number) ? e($accessory->order_number) : null,
             'min_qty' => ($accessory->min_amt) ? (int) $accessory->min_amt : null,
             'remaining_qty' => (int) $accessory->numRemaining(),
-            'users_count' =>  $accessory->numCheckedOut(), //cacullate accessory checkedout
-
+            'users_count' =>  $accessory->numCheckedOut(), //cacullate accessory checkedout with qtycheckedout
             'created_at' => Helper::getFormattedDateObject($accessory->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($accessory->updated_at, 'datetime'),
 
@@ -89,4 +89,30 @@ class AccessoriesTransformer
 
         return (new DatatablesTransformer)->transformDatatables($array, $total);
     }
+
+
+    public function transformCheckedoutAccessory2($accessory, $accessory_locations, $total)
+{
+    $array = [];
+
+    foreach ($accessory_locations as $location) {
+        // Truy vấn lấy tên location từ bảng locations với id tương ứng
+        $locationName = Location::find($location->pivot->assigned_to_location)->name;
+        $locationID = Location::find($location->pivot->assigned_to_location)->id;
+
+
+        $array[] = [
+            'assigned_pivot_id' => $location->pivot->id,
+            'location' => e($locationName), // Sử dụng tên location đã lấy từ bảng locations
+            'id' => (int)$locationID,
+            'checkout_notes' =>e($location->pivot->notes),
+            'last_checkout' => Helper::getFormattedDateObject($location->pivot->created_at, 'datetime'),
+            'type' => 'location',
+            'available_actions' => ['checkin' => true],
+        ];
+    }
+
+    return (new DatatablesTransformer)->transformDatatables($array, $total);
+}
+
 }

@@ -27,9 +27,20 @@
                             <span class="hidden-lg hidden-md">
                             <i class="fas fa-info-circle fa-2x" aria-hidden="true"></i>
                             </span>
-                            <span class="hidden-xs hidden-sm">{{ trans('admin/users/general.info') }}</span>
+                            <span class="hidden-xs hidden-sm">{{ trans('admin/users/general.checked_to_user') }}</span>
+
                         </a>
                     </li>
+
+                    <li>
+                        <a href="#checkedoutLocation" data-toggle="tab">
+                        <span class="hidden-lg hidden-md">
+                        <i class="fas fa-history fa-2x" aria-hidden="true"></i></span>
+                        <span class="hidden-xs hidden-sm">{{ trans('admin/users/general.checked_to_location') }}</span>
+                        </a>
+                    </li>
+
+
 
                     <li>
                         <a href="#history" data-toggle="tab">
@@ -90,9 +101,55 @@
                                     <th data-searchable="false" data-formatter="usersLinkFormatter" data-sortable="false" data-field="name">{{ trans('general.user') }}</th>
                                     <th data-searchable="false" data-sortable="false" data-field="checkout_notes">{{ trans('general.notes') }}</th>
                                     <th data-searchable="false" data-formatter="dateDisplayFormatter" data-sortable="false" data-field="last_checkout">{{ trans('admin/hardware/table.checkout_date') }}</th>
-                                    <th data-searchable="false" data-sortable="false" data-field="actions" data-formatter="accessoriesInOutFormatter">{{ trans('table.actions') }}</th>
+                                    <th data-searchable="false" data-sortable="false" data-field="change" data-formatter="accessoriesInOutFormatter">{{ trans('table.actions') }}</th>
                                     </tr>
                                 </thead>
+                                </table>
+                            </div><!--col-md-9-->
+                          </div> <!-- close tab-pane div -->
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="checkedoutLocation">
+                        <div class="table table-responsive">
+                          <div class="row">
+                              <div class="col-md-12">
+                              <table
+                                    data-cookie-id-table="LocationsTable"
+                                    data-pagination="true"
+                                    data-id-table="LocationsTable"
+                                    data-search="true"
+                                    data-side-pagination="server"
+                                    data-show-columns="true"
+                                    data-show-fullscreen="true"
+                                    data-show-export="true"
+                                    data-show-refresh="true"
+                                    data-sort-order="asc"
+                                    id="LocationsTable"
+                                    class="table table-striped snipe-table"
+                                    data-url="{{ route('api.accessories.checkedout2', $accessory->id) }}"
+                                    data-export-options='{
+                                    "fileName": "export-accessories-{{ str_slug($accessory->name) }}-locations-{{ date('Y-m-d') }}",
+                                    "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                                    }'>
+                                    <thead>
+                                        <tr>
+                                            <th data-searchable="false" data-formatter="locationsLinkFormatter" data-sortable="true" data-field="location">{{ trans('general.name') }}</th>
+                                            <th data-searchable="false" data-sortable="false" data-field="checkout_notes">{{ trans('general.notes') }}</th>
+                                            <th data-searchable="false" data-formatter="dateDisplayFormatter" data-sortable="false" data-field="last_checkout">{{ trans('admin/hardware/table.checkout_date') }}</th>
+                                            <th data-searchable="false" data-sortable="false" data-field="change" data-formatter="accessoriesInOutFormatter2">{{ trans('table.actions') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- <tbody>
+                                        @foreach ($accessory->locations as $location)
+                                        <tr>
+                                            <td class="col-md-1 hidden-print">
+                                            <a href="{{ route('accessories.checkin.show2', array('accessoryID'=> $location->pivot->id, 'backto'=>'location')) }}" class="btn btn-primary btn-sm">{{ trans('Checkin2') }}</a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody> -->
                                 </table>
                             </div><!--col-md-9-->
                           </div> <!-- close tab-pane div -->

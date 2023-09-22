@@ -37,7 +37,7 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.image'),
-                'visible' => true,
+                'visible' => false,
                 'formatter' => 'imageFormatter',
             ],
             [
@@ -99,7 +99,7 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' =>  trans('admin/locations/table.address'),
-                'visible' => true,
+                'visible' => false,
             ],
             [
                 'field' => 'address2',
@@ -115,7 +115,7 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' =>  trans('admin/locations/table.city'),
-                'visible' => true,
+                'visible' => false,
             ],
             [
                 'field' => 'state',
@@ -123,7 +123,7 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' =>  trans('admin/locations/table.state'),
-                'visible' => true,
+                'visible' => false,
             ],
             [
                 'field' => 'zip',
@@ -183,7 +183,7 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.company'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'companiesLinkObjFormatter',
             ],
 

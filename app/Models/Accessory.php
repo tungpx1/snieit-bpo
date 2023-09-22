@@ -269,7 +269,30 @@ class Accessory extends SnipeModel
         return $this->belongsToMany(User::class, 'accessories_users', 'accessory_id', 'assigned_to')
             ->withPivot('id', 'qty_checkedout', 'created_at', 'note');
     }
+    public function locations()
+    {
+        return $this->belongsToMany(Location::class, 'accessories_locations', 'accessory_id', 'assigned_to_location')
+            ->withPivot('id', 'qty_checkedout', 'created_at','notes');
+    }
 
+
+    public function getLocationNames()
+    {
+        // Sử dụng mối quan hệ locations để lấy tất cả các location từ bảng locations
+        $locations = $this->locations;
+    
+        // Tạo một mảng để lưu trữ tên của các location
+        $locationNames = [];
+    
+        foreach ($locations as $location) {
+            // Lấy tên của location từ cột 'name' và thêm vào mảng
+            $locationNames[] = $location->name;
+        }
+    
+        return $locationNames;
+    }
+    
+    
     /**
      * Checks whether or not the accessory has users
      *
@@ -280,6 +303,11 @@ class Accessory extends SnipeModel
     public function hasUsers()
     {
         return $this->belongsToMany(\App\Models\User::class, 'accessories_users', 'accessory_id', 'assigned_to')->count();
+    }
+
+    public function hasLocations()
+    {
+        return $this->locations->sum('pivot.qty_checkedout');
     }
 
     /**
@@ -355,7 +383,7 @@ class Accessory extends SnipeModel
 
      public function numCheckedOut()
      {
-         return $this->users->sum('pivot.qty_checkedout');
+         return $this->users->sum('pivot.qty_checkedout') + $this->locations->sum('pivot.qty_checkedout');
      }
  
 

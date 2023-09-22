@@ -133,7 +133,8 @@ class AccessoryPresenter extends Presenter
                 'visible' => true,
                 'title' => trans('general.change'),
                 'formatter' => 'accessoriesInOutFormatter',
-            ], [
+            ], 
+            [
                 'field' => 'actions',
                 'searchable' => false,
                 'sortable' => false,

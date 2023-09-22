@@ -26,8 +26,8 @@ class LocationsController extends Controller
         $this->authorize('view', Location::class);
         $allowed_columns = [
             'id', 'name', 'address', 'address2', 'city', 'state', 'country', 'zip', 'created_at',
-            'updated_at', 'manager_id', 'image',
-            'assigned_assets_count', 'users_count', 'assets_count','assigned_assets_count', 'assets_count', 'rtd_assets_count', 'currency', 'ldap_ou', ];
+            'updated_at', 'manager_id', 'company_id','image',
+            'assigned_assets_count', 'users_count', 'assets_count','assigned_assets_count', 'assets_count', 'rtd_assets_count', 'currency', 'ldap_ou', ]; //add company_id
 
         $locations = Location::with('parent', 'manager', 'children')->select([
             'locations.id',
@@ -38,10 +38,11 @@ class LocationsController extends Controller
             'locations.state',
             'locations.zip',
             'locations.phone',
-            'locations.fax',
+            'locations.fax', 
             'locations.country',
             'locations.parent_id',
             'locations.manager_id',
+            'locations.company_id', //add company_id
             'locations.created_at',
             'locations.updated_at',
             'locations.image',
