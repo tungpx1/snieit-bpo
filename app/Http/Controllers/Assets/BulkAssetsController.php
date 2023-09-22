@@ -336,7 +336,7 @@ class BulkAssetsController extends Controller
      * Process Multiple Checkout Request
      * @return View
      */
-    public function storeCheckout(AssetCheckoutRequest $request)
+    public function storeCheckout2(AssetCheckoutRequest $request)
     {
 
         $this->authorize('checkout', Asset::class);
@@ -356,6 +356,17 @@ class BulkAssetsController extends Controller
                 foreach ($asset_ids as $asset_id) {
                     if ($target->id == $asset_id) {
                         return redirect()->back()->with('error', 'You cannot check an asset out to itself.');
+                    }
+                }
+            }
+            $settings = \App\Models\Setting::getSettings();
+
+            if ($settings->full_multiple_companies_support){
+                $assigned_user = $request->get('assigned_user');
+                $target2 = $this->determineCheckoutTarget($assigned_user);
+                foreach ($asset_ids as $asset_id) {
+                    if ($target2->company_id != $asset_id->company_id){
+                        return redirect()->to("hardware/$asset_id/checkout")->with('error', trans('general.error_user_company'));
                     }
                 }
             }
@@ -401,6 +412,86 @@ class BulkAssetsController extends Controller
         }
         
     }
+
+    public function storeCheckout(AssetCheckoutRequest $request)
+    {
+        $this->authorize('checkout', Asset::class);
+    
+        try {
+            $admin = Auth::user();
+    
+            $target = $this->determineCheckoutTarget();
+    
+            if (! is_array($request->get('selected_assets'))) {
+                return redirect()->route('hardware.bulkcheckout.show')->withInput()->with('error', trans('admin/hardware/message.checkout.no_assets_selected'));
+            }
+    
+            $asset_ids = array_filter($request->get('selected_assets'));
+    
+            if (request('checkout_to_type') == 'asset') {
+                foreach ($asset_ids as $asset_id) {
+                    if ($target->id == $asset_id) {
+                        return redirect()->back()->with('error', 'You cannot check an asset out to itself.');
+                    }
+                }
+            }
+    
+            $settings = \App\Models\Setting::getSettings();
+    
+            if ($settings->full_multiple_companies_support){
+                foreach ($asset_ids as $asset_id) {
+                    $asset = Asset::findOrFail($asset_id);
+                    if ($target->company_id != $asset->company_id){
+                        return redirect()->back()->with('error', 'One of the selected assets for checkout does not belong to the same company as the person or location it is being transferred to.');
+                        
+                    }
+                }
+            }
+    
+            $checkout_at = date('Y-m-d H:i:s');
+            if (($request->filled('checkout_at')) && ($request->get('checkout_at') != date('Y-m-d'))) {
+                $checkout_at = e($request->get('checkout_at'));
+            }
+    
+            $expected_checkin = '';
+    
+            if ($request->filled('expected_checkin')) {
+                $expected_checkin = e($request->get('expected_checkin'));
+            }
+    
+            $errors = [];
+            DB::transaction(function () use ($target, $admin, $checkout_at, $expected_checkin, $errors, $asset_ids, $request) {
+                foreach ($asset_ids as $asset_id) {
+                    $asset = Asset::findOrFail($asset_id);
+                    $this->authorize('checkout', $asset);
+    
+                    $error = $asset->checkOut($target, $admin, $checkout_at, $expected_checkin, e($request->get('note')), $asset->name, null);
+    
+                    if ($target->location_id != '') {
+                        $asset->location_id = $target->location_id;
+                        $asset->unsetEventDispatcher();
+                        $asset->save();
+                    }
+    
+                    if ($error) {
+                        array_merge_recursive($errors, $asset->getErrors()->toArray());
+                    }
+                }
+            });
+    
+            if (! $errors) {
+                // Redirect to the new asset page
+                return redirect()->to('hardware')->with('success', trans('admin/hardware/message.checkout.success'));
+            }
+            // Redirect to the asset management page with error
+            return redirect()->route('hardware.bulkcheckout.show')->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
+        }
+    }
+
+
+
     public function restore(Request $request) {
         $this->authorize('update', Asset::class);
        $assetIds = $request->get('ids');
