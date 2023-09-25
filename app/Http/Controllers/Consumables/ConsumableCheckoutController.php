@@ -56,6 +56,8 @@ class ConsumableCheckoutController extends Controller
         }
 
         $this->authorize('checkout', $consumable);
+        $settings = \App\Models\Setting::getSettings();
+
 
         // If the quantity is not present in the request or is not a positive integer, set it to 1
         $quantity = $request->input('qty');
@@ -81,6 +83,12 @@ class ConsumableCheckoutController extends Controller
         // Update the consumable data
         $consumable->assigned_to = e($request->input('assigned_to'));
        
+        if ($settings->full_multiple_companies_support){
+            if ($consumable->company_id != $user->company_id){
+                return redirect()->route('consumables.checkout.show', $consumable->id)->with('error', trans('admin/consumables/message.checkout.user_missmatch_consumables'));
+            }
+        }    
+
         $consumable->users()->attach($consumable->id, [
             'consumable_id' => $consumable->id,
             'user_id' => $admin_user->id,

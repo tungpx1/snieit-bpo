@@ -26,7 +26,9 @@ return array(
         'error'   		=> 'Accessory was not checked out, please try again',
         'success' 		=> 'Accessory checked out successfully.',
         'unavailable'   => 'Accessory is not available for checkout. Check quantity available',
-        'user_does_not_exist' => 'That user is invalid. Please try again.',
+        'unavailable'   => 'Accessory is not available for checkout. Check quantity available',
+        'user_missmatch_accessory' => 'Accessory and the receiver do not belong to the same company',
+        'location_missmatch_accessory' => 'The accessory and the location of delivery do not belong to the same company',
         'location_does_not_exist' => 'That location is invalid. Please try again.'
     ),
 

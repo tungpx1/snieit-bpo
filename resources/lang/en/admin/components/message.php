@@ -24,6 +24,7 @@ return array(
         'error'   		=> 'Component was not checked out, please try again',
         'success' 		=> 'Component checked out successfully.',
         'user_does_not_exist' => 'That user is invalid. Please try again.',
+        'asset_missmatch' => 'Asset missmatch with Component',
         'unavailable'      => 'Not enough components remaining: :remaining remaining, :requested requested ',
     ),
 

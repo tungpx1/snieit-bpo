@@ -83,8 +83,16 @@ class ComponentCheckoutController extends Controller
         // Check if the user exists
         $asset = Asset::find($request->input('asset_id'));
 
+        $settings = \App\Models\Setting::getSettings();
+        if ($settings->full_multiple_companies_support){
+            if ($component->company_id != $asset->company_id){
+                return redirect()->route('components.index')->with('error', trans('admin/components/message.asset_missmatch'));
+            }
+        }    
+
         // Update the component data
         $component->asset_id = $request->input('asset_id');
+        
         $component->assets()->attach($component->id, [
             'component_id' => $component->id,
             'user_id' => Auth::user(),
