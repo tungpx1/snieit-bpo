@@ -86,7 +86,7 @@ class ComponentCheckoutController extends Controller
         $settings = \App\Models\Setting::getSettings();
         if ($settings->full_multiple_companies_support){
             if ($component->company_id != $asset->company_id){
-                return redirect()->route('components.index')->with('error', trans('admin/components/message.asset_missmatch'));
+                return redirect()->route('components.index')->with('error', trans('admin/components/message.checkout.asset_missmatch'));
             }
         }    
 
