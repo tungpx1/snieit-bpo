@@ -203,7 +203,7 @@ return [
     'no_results'			=> 'No Results.',
     'no'  					=> 'No',
     'notes'  				=> 'Notes',
-    'order_number'          => 'Order Number',
+    'order_number'          => 'Invoice Number',
     'only_deleted'          => 'Only Deleted Assets',
     'page_menu'				=> 'Showing _MENU_ items',
     'pagination_info'		=> 'Showing _START_ to _END_ of _TOTAL_ items',
