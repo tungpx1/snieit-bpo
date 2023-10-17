@@ -25,6 +25,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HandoverPaperController;
+
 
 Route::group(['middleware' => 'auth'], function () {
     /*
@@ -115,6 +117,17 @@ Route::group(['middleware' => 'auth'], function () {
         'parameters' => ['department' => 'department_id'],
     ]);
 });
+
+Route::group(
+    [
+        'prefix' => 'handover-paper',
+        'middleware' => ['auth']
+    ],
+    function () {
+        Route::get('list', [\App\Http\Controllers\HandoverPaperController::class, 'index'])->name('handover_paper.list');
+        Route::get('verify', [\App\Http\Controllers\HandoverPaperController::class, 'verify'])->name('handover_paper.verify');
+    }
+);
 
 /*
 |
@@ -428,9 +441,6 @@ Route::group(['prefix' => 'setup', 'middleware' => 'web'], function () {
         [SettingsController::class, 'getSetupIndex']
     )->name('setup');
 });
-
-
-
 
 
 Route::group(['middleware' => 'web'], function () {

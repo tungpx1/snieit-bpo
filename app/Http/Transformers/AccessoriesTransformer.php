@@ -80,6 +80,7 @@ class AccessoriesTransformer
                 'first_name'=> e($user->first_name),
                 'last_name'=> e($user->last_name),
                 'employee_number' =>  e($user->employee_num),
+                'qty_checkedout' => $user->pivot->qty_checkedout,
                 'checkout_notes' => e($user->pivot->note),
                 'last_checkout' => Helper::getFormattedDateObject($user->pivot->created_at, 'datetime'),
                 'type' => 'user',
@@ -105,6 +106,7 @@ class AccessoriesTransformer
             'assigned_pivot_id' => $location->pivot->id,
             'location' => e($locationName), // Sử dụng tên location đã lấy từ bảng locations
             'id' => (int)$locationID,
+            'qty_checkedout' => $location->pivot->qty_checkedout,
             'checkout_notes' =>e($location->pivot->notes),
             'last_checkout' => Helper::getFormattedDateObject($location->pivot->created_at, 'datetime'),
             'type' => 'location',

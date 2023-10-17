@@ -26,7 +26,7 @@
                 <div class="box box-default">
                     @if ($accessory->id)
                         <div class="box-header with-border">
-                            <h2 class="box-title">{{ $accessory->name }}</h2>
+                            <h2 class="box-title">{{ $accessory->name }} ({{ $qty_checkedout }} {{ trans('admin/accessories/general.checkedout') }})</h2>
                         </div><!-- /.box-header -->
                     @endif
 
@@ -39,7 +39,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">{{ trans('admin/hardware/form.name') }}</label>
                                         <div class="col-md-6">
-                                          <p class="form-control-static">{{ $accessory->name }}</p>
+                                          <p class="form-control-static">{{ $accessory->name }} </p>
                                         </div>
                                     </div>
                                     @endif
@@ -52,6 +52,18 @@
                                             {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                                         </div>
                                     </div>
+
+                            <!-- Checkin QTY -->
+
+                                    <div class="form-group {{ $errors->has('qty_to_checkin') ? 'error' : '' }} ">
+                                    <label for="qty" class="col-md-3 control-label">{{ trans('general.qty') }}</label>
+                                    <div class="col-md-7 col-sm-12 required">
+                                        <div class="col-md-2" style="padding-left:0px">
+                                            <input class="form-control" type="number" name="qty_to_checkin" id="qty_to_checkin" value="1" min="1" max="{{$qty_checkedout}}" />
+                                        </div>
+                                    </div>
+                                    {!! $errors->first('qty_to_checkin', '<div class="col-md-8 col-md-offset-3"><span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span></div>') !!}
+                                </div>
                             <!-- Checkout/Checkin Date -->
                             <div class="form-group{{ $errors->has('checkin_at') ? ' has-error' : '' }}">
                                 {{ Form::label('checkin_at', trans('admin/hardware/form.checkin_date'), array('class' => 'col-md-3 control-label')) }}

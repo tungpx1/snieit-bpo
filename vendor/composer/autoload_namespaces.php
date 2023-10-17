@@ -9,6 +9,8 @@ return array(
     'Tmilos\\Value\\Tests\\' => array($vendorDir . '/tmilos/value/tests'),
     'Tmilos\\Value\\' => array($vendorDir . '/tmilos/value/src'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'Mockery' => array($vendorDir . '/mockery/mockery/library'),
+    'JsonMapper' => array($vendorDir . '/netresearch/jsonmapper/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'ForceUTF8\\' => array($vendorDir . '/neitanod/forceutf8/src'),
 );

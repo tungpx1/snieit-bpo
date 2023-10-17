@@ -7,6 +7,8 @@ use App\Http\Controllers\Assets\AssetCheckoutController;
 use App\Http\Controllers\Assets\AssetCheckinController;
 use App\Http\Controllers\Assets\AssetFilesController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HandoverPaperController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +116,15 @@ Route::group(
             [AssetCheckoutController::class, 'store']
         )->name('hardware.checkout.store');
 
+        Route::post('{assetId}/handoverpaperpreview',
+            [HandoverPaperController::class, 'previewHandoverPaper']
+        )->name('hardware.checkout.preview');
+
+      
+        Route::post('/handover/submit/{assetId}/{admin}/{target}', 
+            [HandoverPaperController::class, 'submitHandover']
+            )->name('handover.submit');
+        
         Route::get('{assetId}/checkin/{backto?}',
             [AssetCheckinController::class, 'create']
         )->name('hardware.checkin.create');

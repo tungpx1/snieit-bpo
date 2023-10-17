@@ -13,6 +13,8 @@
 
     <meta name="apple-mobile-web-app-capable" content="yes">
 
+     <!-- Select2 -->
+     <link rel="stylesheet" href="{{ url(secure_asset('js/plugins/select2/select2.min.css')) }}">
 
     <link rel="apple-touch-icon"
           href="{{ ($snipeSettings) && ($snipeSettings->favicon!='') ?  Storage::disk('public')->url(e($snipeSettings->logo)) :  config('app.url').'/img/snipe-logo-bug.png' }}">
@@ -182,7 +184,7 @@
                                     </a>
                                 </li>
                             @endcan
-
+         
                             @can('index', \App\Models\Asset::class)
                                 <li>
                                     <form class="navbar-form navbar-left form-horizontal" role="search"
@@ -542,7 +544,7 @@
                                                 {{ trans('general.requested') }}</a>
                                         </li>
                                     @endcan
-
+                          
                                     @can('create', \App\Models\Asset::class)
                                         <li{!! (Request::query('Deleted') ? ' class="active"' : '') !!}>
                                             <a href="{{ url('hardware?status=Deleted') }}">
@@ -613,6 +615,16 @@
                             </li>
                         @endcan
 
+                        @can('admin', \App\Models\User::class)
+                                <li{!! (Request::is('handover-paper/list*') ? ' class="active"' : '') !!}>
+                                    <a href="{{ route('handover_paper.list') }}">
+                                        <i class="fas fa-file-signature fa-fw"></i>
+                                        <span>{{ trans("Handover Paper") }}</span>
+                                    </a>
+                                </li>
+                            @endcan
+
+
                         @can('view', \App\Models\User::class)
                             <li{!! (Request::is('users*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('users.index') }}" accesskey="6">
@@ -621,6 +633,7 @@
                                 </a>
                             </li>
                         @endcan
+
                         @can('import')
                             <li{!! (Request::is('import/*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('imports.index') }}">
@@ -1007,6 +1020,11 @@
                 event.preventDefault();
                 $(this).ekkoLightbox();
             });
+            
+            $('.js-example-basic-single').select2({
+            placeholder: 'Enter name to find',
+            allowClear: true
+             });
 
 
         </script>

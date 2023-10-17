@@ -20,6 +20,8 @@ use App\Models\PredefinedKit;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
 use App\Models\User;
+use App\Models\HandoverPaper;
+
 use App\Policies\AccessoryPolicy;
 use App\Policies\AssetModelPolicy;
 use App\Policies\AssetPolicy;
@@ -38,6 +40,7 @@ use App\Policies\PredefinedKitPolicy;
 use App\Policies\StatuslabelPolicy;
 use App\Policies\SupplierPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\HandoverPaperPolicy;
 use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -71,6 +74,9 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Manufacturer::class => ManufacturerPolicy::class,
         Company::class => CompanyPolicy::class,
+        HandoverPaper::class => HandoverPaperPolicy::class,
+
+
     ];
 
     /**
@@ -186,6 +192,8 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAccess('self.view_purchase_cost');
         });
 
+
+
         // This is largely used to determine whether to display the gear icon sidenav 
         // in the left-side navigation
         Gate::define('backend.interact', function ($user) {
@@ -200,7 +208,9 @@ class AuthServiceProvider extends ServiceProvider
                 || $user->can('view', Manufacturer::class)
                 || $user->can('view', CustomField::class)
                 || $user->can('view', CustomFieldset::class)
-                || $user->can('view', Depreciation::class);
+                || $user->can('view', Depreciation::class)
+                || $user->can('view', HandoverPaper::class);
+
         });
 
 
