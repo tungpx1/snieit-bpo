@@ -70,7 +70,7 @@ class LicenseCheckoutController extends Controller
             return redirect()->route('licenses.index')->with('success', trans('admin/licenses/message.checkout.success'));
         }
 
-        return redirect()->route('licenses.index')->with('error', trans('Something went wrong handling this checkout.'));
+        return redirect()->route('licenses.index')->with('error', trans('Asset or User missmatch with Licenses.'));
     }
 
     protected function findLicenseSeatToCheckout($license, $seatId)
@@ -99,6 +99,14 @@ class LicenseCheckoutController extends Controller
         }
         $licenseSeat->asset_id = request('asset_id');
 
+        $settings = \App\Models\Setting::getSettings();
+        if ($settings->full_multiple_companies_support){
+            if ($licenseSeat->company_id != $target->company_id){
+                return false;
+            }
+        }    
+
+
         // Override asset's assigned user if available
         if ($target->checkedOutToUser()) {
             $licenseSeat->assigned_to = $target->assigned_to;
@@ -119,6 +127,13 @@ class LicenseCheckoutController extends Controller
             return redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.user_does_not_exist'));
         }
         $licenseSeat->assigned_to = request('assigned_to');
+
+        $settings = \App\Models\Setting::getSettings();
+        if ($settings->full_multiple_companies_support){
+            if ($licenseSeat->company_id != $target->company_id){
+                return false;
+            }
+        }    
 
         if ($licenseSeat->save()) {
             event(new CheckoutableCheckedOut($licenseSeat, $target, Auth::user(), request('note')));

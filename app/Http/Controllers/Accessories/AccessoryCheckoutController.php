@@ -72,6 +72,9 @@ class AccessoryCheckoutController extends Controller
             $quantity = 1;
         }
 
+        $settings = \App\Models\Setting::getSettings();
+
+
         $checkoutType = $request->input('checkout_to_type');
 
         if ($checkoutType === 'user') {
@@ -79,7 +82,7 @@ class AccessoryCheckoutController extends Controller
             if (!$user = User::find($request->input('assigned_to'))) {
                 return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.user_does_not_exist'));
             }
-            
+        
             // Make sure there is at least one available to checkout
             if ($accessory->numRemaining() <= 0 || $quantity > $accessory->numRemaining()){
                 return redirect()->route('accessories.index')->with('error', trans('admin/accessories/message.checkout.unavailable'));
@@ -88,6 +91,12 @@ class AccessoryCheckoutController extends Controller
 
             // Update the accessory data
             $accessory->assigned_to = e($request->input('assigned_to'));
+
+            if ($settings->full_multiple_companies_support){
+                if ($accessory->company_id != $user->company_id){
+                    return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.user_missmatch_accessory'));
+                }
+            }    
 
             $accessory->users()->attach($accessory->id, [
                 'accessory_id' => $accessory->id,
@@ -115,6 +124,12 @@ class AccessoryCheckoutController extends Controller
 
 
             $accessory->assigned_to_location = e($request->input('assigned_location'));
+
+            if ($settings->full_multiple_companies_support){
+                if ($accessory->company_id != $location->company_id){
+                    return redirect()->route('accessories.checkout.show', $accessory->id)->with('error', trans('admin/accessories/message.checkout.location_missmatch_accessory'));
+                }
+            }    
 
             $accessory->locations()->attach($accessory->id, [
                 'accessory_id' => $accessory->id,

@@ -671,7 +671,7 @@
         <div class="tab-pane" id="asset">
           <!-- checked out assets table -->
 
-            @include('partials.asset-bulk-actions')
+            @include('partials.asset-bulk-actions', ['checkin' => true])
 
             <div class="table table-responsive">
 

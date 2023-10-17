@@ -10,6 +10,7 @@ use App\Http\Requests\AssetCheckoutRequest;
 use App\Models\Asset;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use  App\Models\User;
 
 class AssetCheckoutController extends Controller
 {
@@ -93,7 +94,7 @@ class AssetCheckoutController extends Controller
 
             if ($settings->full_multiple_companies_support){
                 if ($target->company_id != $asset->company_id){
-                    return redirect()->to("hardware/$assetId/checkout")->with('error', trans('general.error_user_company'));
+                    return redirect()->to("hardware/$assetId/checkout")->with('error', trans('general.error_user_or_location_company'));
                 }
             }
             

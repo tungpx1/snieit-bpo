@@ -203,7 +203,7 @@ return [
     'no_results'			=> 'No Results.',
     'no'  					=> 'No',
     'notes'  				=> 'Notes',
-    'order_number'          => 'Order Number',
+    'order_number'          => 'Invoice Number',
     'only_deleted'          => 'Only Deleted Assets',
     'page_menu'				=> 'Showing _MENU_ items',
     'pagination_info'		=> 'Showing _START_ to _END_ of _TOTAL_ items',
@@ -459,7 +459,8 @@ return [
     'serial_number'        => 'Serial Number',
     'item_notes' => ':item Notes',
     'item_name_var' => ':item Name',
-    'error_user_company' => 'User and Asset companies missmatch',
+    'error_user_company' => 'User and Asset companies missmatch',    
+    'error_user_or_location_company' => 'User or Location and Asset companies missmatch',
     'error_user_company_accept_view' => 'An Asset assigned to you belongs to a different company so you can\'t accept nor deny it, please check with your manager',
     'importer' => [
         'checked_out_to_fullname' => 'Checked Out to: Full Name',

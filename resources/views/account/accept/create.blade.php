@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         @endif
-
+                        
                     </div> <!-- / box-body -->
                     <div class="box-footer text-right">
                         <button type="submit" class="btn btn-success" id="submit-button"><i class="fa fa-check icon-white" aria-hidden="true"></i> {{ trans('general.submit') }}</button>
