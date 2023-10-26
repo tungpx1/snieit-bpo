@@ -49,7 +49,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/tungpx/dbsnipeit
+      device: /home/tungpx/db
       o: bind
   logs:
     driver: local

@@ -29,9 +29,17 @@ class StatuslabelSeeder extends Seeder
             'user_id' => $admin->id,
         ]);
 
+        Statuslabel::factory()->undeploy()->create([
+            'name' => 'Deployed',
+            'user_id' => $admin->id,
+        ]);
+
+
         Statuslabel::factory()->outForDiagnostics()->create(['user_id' => $admin->id]);
         Statuslabel::factory()->outForRepair()->create(['user_id' => $admin->id]);
         Statuslabel::factory()->broken()->create(['user_id' => $admin->id]);
         Statuslabel::factory()->lost()->create(['user_id' => $admin->id]);
+        Statuslabel::factory()->undeploy()->create(['user_id' => $admin->id]);
+
     }
 }

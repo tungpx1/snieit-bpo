@@ -46,6 +46,19 @@ class StatuslabelFactory extends Factory
         });
     }
 
+    public function undeploy()
+    {
+        return $this->state(function () {
+            return [
+                'notes' => $this->faker->sentence(),
+                'deployable' => 0,
+                'pending' => 0,
+                'archived' => 0,
+                'default_label' => 1,
+            ];
+        });
+    }
+
     public function pending()
     {
         return $this->state(function () {

@@ -78,13 +78,13 @@ class HandoverPaperController extends Controller
             $numberOfReport = $now->format('dmy');
             $numberOfReport = "{$numberOfReport}-{$targetuser->employee_num}";
             $nameOfFile = "checkout-{$numberOfReport}-{$admin->employee_num}-{$targetuser->employee_num}";
-            $msg = trans('admin/hardware/message.checkout.success');
+            $msg = ('Create handover paper successful.');
 
             $path = $file->storeAs('temp',$nameOfFile);  
     
             // Tải file lên Google Drive
             $fileId = $this->uploadFileToGoogleDrive($path);
-            $msg = ' Here is link of handover paper <a href="https://docs.google.com/file/d/'. $fileId . '/view"> https://docs.google.com/file/d/'.$fileId .'/view  </a>';
+            $msg .= ' Here is link of handover paper <a href="https://docs.google.com/file/d/'. $fileId . '/view"> https://docs.google.com/file/d/'.$fileId .'/view  </a>';
 
             $newHandoverPaper = new HandoverPaper([
                 'link' => 'https://docs.google.com/file/d/'. $fileId . '/view',
@@ -98,8 +98,7 @@ class HandoverPaperController extends Controller
             $newHandoverPaper->save();
             // Xóa file tạm thời
             Storage::delete($path);
-            return redirect()->route('hardware.index')->with('success', $msg);
-
+            return redirect()->route('hardware.index')->withInput(['success' => $msg]);
         }
     
          else {

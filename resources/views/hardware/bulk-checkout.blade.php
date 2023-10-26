@@ -75,7 +75,12 @@
             'select_id' => 'assigned_assets_select',
           ])
 
-
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+              <div class="col-md-8">
+                <button type="button" class="btn btn-primary" id="preview-handover-paper">Preview Handover Paper</button>
+              </div>
+          </div>
       </div> <!--./box-body-->
       <div class="box-footer">
         <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>
