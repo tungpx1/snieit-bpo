@@ -64,6 +64,5 @@ volumes:
       device: /home/tungpx/source
       o: bind
 
-    
 networks:
   snipeit-backend: {}

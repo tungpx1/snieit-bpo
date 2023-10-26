@@ -3,7 +3,7 @@
         'name' => 'snipe/snipe-it',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'e3584e19cc6b67ef28b568d5cd0270cd2820a4b1',
+        'reference' => 'a362087726b76fbaaf5e8c6a69ef491a19a265b2',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -1408,7 +1408,7 @@
         'snipe/snipe-it' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'e3584e19cc6b67ef28b568d5cd0270cd2820a4b1',
+            'reference' => 'a362087726b76fbaaf5e8c6a69ef491a19a265b2',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
