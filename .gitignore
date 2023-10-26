@@ -40,7 +40,6 @@ public/uploads/categories/*
 public/uploads/users/*
 storage/app/private_uploads/users/*
 public/uploads/departments/*
-storage/snipeit.json
 storage/debugbar/
 storage/dumps/*
 storage/framework/cache/*
@@ -53,6 +52,7 @@ tests/_support/_generated/*
 /npm-debug.log
 /storage/oauth-private.key
 /storage/oauth-public.key
+/storage/snipeit.json
 logs/*
 *.cache
 
