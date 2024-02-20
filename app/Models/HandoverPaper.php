@@ -12,6 +12,7 @@ class HandoverPaper extends Model
         'link',
         'sender_id',
         'receiver_id',
+        'asset_tag',
         'number_of_report',
         'is_verify',
         'type'
@@ -23,6 +24,9 @@ class HandoverPaper extends Model
 
     public function receiver() {
         return $this->belongsTo('App\Models\User', 'receiver_id');
+    }
+    public function checkedout_asset_tag() {
+        return $this->belongsTo('App\Models\Asset', 'asset_tag');
     }
 }
 

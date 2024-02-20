@@ -259,6 +259,8 @@ class ConsumablesController extends Controller
         }
 
         $this->authorize('checkout', $consumable);
+        $settings = \App\Models\Setting::getSettings();
+
 
         // Make sure there is at least one available to checkout
         if ($consumable->numRemaining() <= 0) {
@@ -276,12 +278,21 @@ class ConsumablesController extends Controller
         // Update the consumable data
         $consumable->assigned_to = $request->input('assigned_to');
 
+        //check consumalbe and user is the same of the company
+        if ($settings->full_multiple_companies_support){
+                if ($consumable->company_id != $user->company_id){
+                     return redirect()->route('consumables.checkout.show', $consumable->id)->with('error', trans('admin/consumables/message.checkout.user_missmatch_consumables'));
+                }
+        }    
+
         $consumable->users()->attach($consumable->id,
                 [
                     'consumable_id' => $consumable->id,
                     'user_id' => $user->id,
                     'assigned_to' => $request->input('assigned_to'),
                     'note' => $request->input('note'),
+                    'qty_checkedout' => e($request->input('qty')),
+
                 ]
             );
 

@@ -30,6 +30,10 @@ class HandoverPaperController extends Controller
             array_push($where, array('receiver_id', '=', $request->user));
         }
 
+        if ($request->has('asset_tag') && $request->asset_tag) {
+            array_push($where, array('asset_tag', '=', $request->asset_tag));
+        }
+
         if ($request->has('type') && $request->type != -1) {
             array_push($where, array('is_verify', '=', $request->type));
         }
@@ -38,12 +42,15 @@ class HandoverPaperController extends Controller
             ->paginate(10);
 
         $users = User::all();
+        $assets = Asset::all();
         $this->authorize('view', HandoverPaper::class);
         return view('handover_paper/index', [
                 'papers' => $papers,
                 'users' => $users,
+                'assets' => $assets,
                 'number_of_report' => $request->number_of_report,
                 'user_search' => $request->user,
+                'asset_search' => $request->asset,
                 'type' => $request->type
             ]
         );
@@ -61,14 +68,18 @@ class HandoverPaperController extends Controller
         return redirect()->back()->with('success', 'Updated successfully');
     }
 
-  public function submitHandover(Request $request, $assetId, $checkoutUser, $target)
+  public function submitHandover(Request $request)
   {
     if ($request->hasFile('pdf-file')) 
     {
+        $assetId = $request->input('assetId');
+        $checkoutUser = $request->input('checkoutUser');
+        $target = $request->input('target');
         $file = $request->file('pdf-file');
 
         $admin = User::find($checkoutUser);
         $targetuser = User::find($target);
+        $asset = Asset::find($assetId);
         
         if ($admin && $targetuser)
         {
@@ -76,7 +87,9 @@ class HandoverPaperController extends Controller
 
             $now = new \DateTime('NOW');
             $numberOfReport = $now->format('dmy');
-            $numberOfReport = "{$numberOfReport}-{$targetuser->employee_num}";
+            // $numberOfReport = "{$numberOfReport}-{$targetuser->employee_num}";
+            $numberOfReport = "SGS-{$numberOfReport}-{$targetuser->employee_num}";
+
             $nameOfFile = "checkout-{$numberOfReport}-{$admin->employee_num}-{$targetuser->employee_num}";
             $msg = ('Create handover paper successful.');
 
@@ -85,11 +98,12 @@ class HandoverPaperController extends Controller
             // Tải file lên Google Drive
             $fileId = $this->uploadFileToGoogleDrive($path);
             $msg .= ' Here is link of handover paper <a href="https://docs.google.com/file/d/'. $fileId . '/view"> https://docs.google.com/file/d/'.$fileId .'/view  </a>';
-
+            $link = 'https://docs.google.com/file/d/' . $fileId . '/view';
             $newHandoverPaper = new HandoverPaper([
                 'link' => 'https://docs.google.com/file/d/'. $fileId . '/view',
                 'sender_id' => $admin->id,
                 'receiver_id' => $targetuser->id,
+                'asset_tag' => $asset->asset_tag,
                 'number_of_report' => $numberOfReport,
                 'is_verify' => 0,
                 'type' => 1
@@ -98,7 +112,15 @@ class HandoverPaperController extends Controller
             $newHandoverPaper->save();
             // Xóa file tạm thời
             Storage::delete($path);
-            return redirect()->route('hardware.index')->withInput(['success' => $msg]);
+            $data = [
+                'msg' => $msg,
+                'assetId' => $assetId,
+                'checkoutUser' => $checkoutUser,
+                'target' => $target,
+                'linkfile' => $link
+            ];
+            return  response()->json(["filelink" => $link]);
+            // return redirect()->route('hardware.index')->withInput(['success' => $msg]);
         }
     
          else {
@@ -138,17 +160,23 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
 }
 
 
-    public function previewHandoverPaper(AssetCheckoutRequest $request, $assetId)
+    public function previewHandoverPaper(AssetCheckoutRequest $request)
     {
+        $assetId = $request->input('asset_id');
         $asset = Asset::find($assetId);
+        $IDasset = $asset->id;
         $checkoutData = $request->all();
         $checkoutUser = Auth::user();
-
+        $fullNameUserCheckout = $checkoutUser->getFullNameAttribute();
+        $checkoutUserID = $checkoutUser->id;
        // Find the user and get their full name
        $target = User::find($checkoutData['assigned_user']);
-       $fullName = $target ? $target->getFullNameAttribute() : '';
+       $fullNameUserTarget = $target ? $target->getFullNameAttribute() : '';
+       $targetUserID = $target->id;
+       
 
         $now = new \DateTime('NOW');
+        $checkoutDate = $now->format('d/m/Y');
         $numberOfReport = $now->format('dmy');
         $numberOfReport = "SGS-{$numberOfReport}-{$target->employee_num}";
 
@@ -161,8 +189,38 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
             }
         }
 
+        $data = [
+            'asset' => $asset,
+            'assetId' => $IDasset,
+            'fullNameUserTarget' => $fullNameUserTarget,
+            'targetUserID' => $targetUserID,
+            'fullNameUserCheckout' => $fullNameUserCheckout,
+            'checkoutUserID' => $checkoutUserID,
+            'checkoutDate' => $checkoutDate,
+            'numberOfReport' => $numberOfReport
+        ];
+    
+        return response()->json($data);
 
-        return view('handover_paper.preview', compact('asset', 'checkoutData', 'target','checkoutUser','now','numberOfReport'));
+
+        // return view('handover_paper.preview', compact('asset', 'checkoutData', 'target','checkoutUser','now','numberOfReport'));
+    }
+
+
+
+
+    public function uploadPdf(Request $request)
+    {
+        if ($request->hasFile('pdf')) {
+
+            $pdf = $request->file('pdf');
+            $path=$pdf->storeAs('temp', 'uploaded.pdf');
+            $fileId = $this->uploadFileToGoogleDrive($path);
+
+            return response()->json(['message' => 'File uploaded successfully']);
+        } else {
+            return response()->json(['message' => 'No file uploaded'], 400);
+        }
     }
 
 }

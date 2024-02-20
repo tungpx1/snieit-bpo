@@ -13,17 +13,23 @@
 
 {{-- Page content --}}
 @section('content')
+<style>
+         #type-search {
+             width: 160px;
+         }
+     </style>
+     
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-body">
                     <div class="row" style="margin-bottom: 10px;">
-                        <div class="col-md-12">
+                        <div class="col-md-5">
                             <form class="form-inline">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="exampleInputName2">Number of Report</label>
                                     <input type="text" class="form-control" id="exampleInputName2" name="number_of_report" value="{{ $number_of_report }}">
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="user-search">Receiver</label>
                                     <select class="js-example-basic-single form-control" name="user" id="user-search">
@@ -34,11 +40,21 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="asset-search">Asset_Tag</label>
+                                    <select class="js-example-basic-single form-control" name="asset_tag" id="asset-search">
+                                        <option></option>
+                                        @foreach($assets as $key => $asset)
+                                            <option value="{{ $asset->asset_tag }}" @if ($asset_search == $asset->asset_tag) selected="selected" @endif>{{ $asset->asset_tag }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                </div>
+                                <div class="form-group">
                                     <label for="type-search">Type Handover Paper </label>
                                     <select class="js-example-basic-single form-control" name="type" id="type-search">
                                         <option value="-1" @if ($type == -1) selected @endif>Show All</option>
                                         <option value="0" @if ($type == 0) selected @endif>Unconfirmed</option>
-                                        <option value="1" @if ($type == 1) selected @endif>Verified</option>
+                                        <option value="1" @if ($type == 1) selected @endif>Confirmed</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Search</button>
@@ -55,6 +71,7 @@
                                     <th scope="col">Link</th>
                                     <th scope="col">Sender</th>
                                     <th scope="col">Receiver</th>
+                                    <th scope="col">Asset_tag</th>
                                     <th scope="col">Type</th>
                                     <th>Verify</th>
                                 </tr>
@@ -63,12 +80,13 @@
                                 @foreach($papers as $key => $paper)
                                     <tr>
                                         <th scope="row">{{ $key + 1 }}</th>
-                                        <td>SGS-{{ $paper->number_of_report }}</td>
+                                        <td>{{ $paper->number_of_report }}</td>
                                         <td><a href="{{$paper->link}}" target="_blank" class="btn btn-link">Click here</a></td>
                                         <td>{{ $paper->sender ? $paper->sender->getFullNameAttribute() : '' }}</td>
                                         <td>{{ $paper->receiver ? $paper->receiver->getFullNameAttribute() : '' }}</td>
+                                        <td>{{ $paper->asset_tag ? $paper->asset_tag : 'N/A' }}</td>
                                         <td>{{ $paper->type === 0 ? 'Check out' : 'Check in' }}</td>
-                                        <td>@if ($paper->is_verify) <a class="btn btn-danger" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Unconfirmed</a> @else <a class="btn btn-success" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Verify</a> @endif</td>
+                                        <td>@if ($paper->is_verify) <a class="btn btn-danger" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Unconfirmed</a> @else <a class="btn btn-success" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Confirmed</a> @endif</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

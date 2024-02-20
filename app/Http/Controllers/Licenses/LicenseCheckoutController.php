@@ -99,9 +99,11 @@ class LicenseCheckoutController extends Controller
         }
         $licenseSeat->asset_id = request('asset_id');
 
+        $license = License::find($licenseSeat->license_id);
+
         $settings = \App\Models\Setting::getSettings();
         if ($settings->full_multiple_companies_support){
-            if ($licenseSeat->company_id != $target->company_id){
+            if ($license->company_id != $target->company_id){
                 return false;
             }
         }    
@@ -127,10 +129,10 @@ class LicenseCheckoutController extends Controller
             return redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.user_does_not_exist'));
         }
         $licenseSeat->assigned_to = request('assigned_to');
-
+        $license = License::find($licenseSeat->license_id);
         $settings = \App\Models\Setting::getSettings();
         if ($settings->full_multiple_companies_support){
-            if ($licenseSeat->company_id != $target->company_id){
+            if ($license->company_id != $target->company_id){
                 return false;
             }
         }    

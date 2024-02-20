@@ -76,11 +76,28 @@
           ])
 
           <div class="form-group">
-            <label class="col-md-3 control-label"></label>
-              <div class="col-md-8">
-                <button type="button" class="btn btn-primary" id="preview-handover-paper">Preview Handover Paper</button>
+              <label for="" class="col-md-3 control-label">Bulk serial assets</label>
+              <div class="col-md-8" style="padding-top:7px;">
+                  <textarea class="form-control" name="bulk_serial_assets"></textarea>
               </div>
           </div>
+
+          <div class="form-group">
+              <label for="" class="col-md-3 control-label">Bulk asset tag assets</label>
+              <div class="col-md-8" style="padding-top:7px;">
+                  <textarea class="form-control" name="bulk_assettag_assets"></textarea>
+              </div>
+          </div>
+          
+          <div class="form-group">
+              <label class="col-md-3 control-label">Preview Handover Paper</label>
+              <div class="col-md-8" style="padding-top: 15px;">
+                  <button type="button" class="btn btn-primary" id="preview-handover-paper">Preview Handover Paper</button>
+              </div>
+          </div>
+
+        
+      
       </div> <!--./box-body-->
       <div class="box-footer">
         <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>

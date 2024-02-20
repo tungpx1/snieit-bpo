@@ -362,11 +362,62 @@ class BulkAssetsController extends Controller
 
             $target = $this->determineCheckoutTarget();
 
-            if (! is_array($request->get('selected_assets'))) {
+            if (! is_array($request->get('selected_assets'))&& !$request->get('bulk_serial_assets') && !$request->get('bulk_assettag_assets')) {
                 return redirect()->route('hardware.bulkcheckout.show')->withInput()->with('error', trans('admin/hardware/message.checkout.no_assets_selected'));
             }
 
-            $asset_ids = array_filter($request->get('selected_assets'));
+            if ($request->get('selected_assets') && $request->get('bulk_serial_assets')) {
+                return redirect()->route('hardware.bulkcheckout.show')->withInput()->with('error', 'Please choose only option. Assets field or bulk serial assets fields');
+            }
+            
+            $asset_ids = [];
+
+            if ($request->get('selected_assets')) {
+                $asset_ids = array_filter($request->get('selected_assets'));
+
+            }
+
+            if ($request->get('bulk_serial_assets')) {
+                $errorSerial = [];
+                $bulkSerialAssets = nl2br($request->get('bulk_serial_assets'));
+                $serialAssets = explode('<br />', $bulkSerialAssets);
+                foreach ($serialAssets as $key => $serialAsset) {
+                    $asset = Asset::where('serial', trim($serialAsset))->first();
+                    if (!$asset || $asset->assigned_to || $asset->status_id != 2) {
+                        array_push($errorSerial, $serialAsset);
+                    } else {
+                        array_push($asset_ids, $asset->id);
+                    }
+                }
+
+                if (count($errorSerial)) {
+                    $errorSerialStr = implode(',', $errorSerial);
+                    return redirect()->back()->with('error', "Here's is the error serial list, please check them again ".$errorSerialStr);
+                }
+            }
+
+
+            if ($request->get('bulk_assettag_assets')) {
+                $errorTags = [];
+                $bulkAssetTags = $request->get('bulk_assettag_assets');
+                $assetTags = explode("\n", $bulkAssetTags);
+                foreach ($assetTags as $tag) {
+                    $asset = Asset::where('asset_tag', trim($tag))->first();
+                    if (!$asset || $asset->assigned_to || $asset->status_id != 2) {
+                        array_push($errorTags, $tag);
+                    } else {
+                        array_push($asset_ids, $asset->id);
+                    }
+                }
+            
+                if (count($errorTags)) {
+                    $errorTagsStr = implode(',', $errorTags);
+                    return redirect()->back()->with('error', "Here's is the error asset tag list, please check them again ".$errorTagsStr);
+                }
+            }
+
+
+  
 
             if (request('checkout_to_type') == 'asset') {
                 foreach ($asset_ids as $asset_id) {
@@ -478,6 +529,8 @@ class BulkAssetsController extends Controller
             if ($request->filled('status_id')) {
                 $asset->status_id = e($request->get('status_id'));
             }
+            else
+                $asset->status_id = 2;
 
             // This is just meant to correct legacy issues where some user data would have 0
             // as a location ID, which isn't valid. Later versions of Snipe-IT have stricter validation

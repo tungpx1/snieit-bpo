@@ -78,6 +78,9 @@ class AssetCheckinController extends Controller
         if ($request->filled('status_id')) {
             $asset->status_id = e($request->get('status_id'));
         }
+        else
+            $asset->status_id = 2;
+
 
         // This is just meant to correct legacy issues where some user data would have 0
         // as a location ID, which isn't valid. Later versions of Snipe-IT have stricter validation

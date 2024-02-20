@@ -923,6 +923,9 @@ class AssetsController extends Controller
         if ($request->has('status_id')) {
             $asset->status_id = $request->input('status_id');
         }
+        else
+            $asset->status_id = 2;
+
         
         $checkin_at = $request->filled('checkin_at') ? $request->input('checkin_at').' '. date('H:i:s') : date('Y-m-d H:i:s');
         $originalValues = $asset->getRawOriginal();
@@ -954,11 +957,11 @@ class AssetsController extends Controller
             $tag = $request->input('asset_tag');
         }
         $asset = Asset::where('asset_tag', $tag)->first();
-
+     
         if ($asset) {
             return $this->checkin($request, $asset->id);
         }
-
+        
         return response()->json(Helper::formatStandardApiResponse('error', [
             'asset'=> e($tag)
         ], 'Asset with tag '.e($tag).' not found'));

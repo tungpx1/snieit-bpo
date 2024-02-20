@@ -83,6 +83,7 @@ class ConsumableCheckoutController extends Controller
         // Update the consumable data
         $consumable->assigned_to = e($request->input('assigned_to'));
        
+        //check consumalbe and user is the same of the company
         if ($settings->full_multiple_companies_support){
             if ($consumable->company_id != $user->company_id){
                 return redirect()->route('consumables.checkout.show', $consumable->id)->with('error', trans('admin/consumables/message.checkout.user_missmatch_consumables'));

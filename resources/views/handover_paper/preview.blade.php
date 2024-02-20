@@ -94,11 +94,13 @@
     <h2>List of Items Handed Over</h2>
     <table>
         <tr>
+            <th>Asset_tag</th>
             <th>Item</th>
             <th>Quantity</th>
             <th>Description</th>
         </tr>
         <tr>
+            <td>{{ $asset->asset_tag}}</td>
             <td>{{ $asset->name}}</td>
             <td>1</td>
             <td>[Description of Item]</td>

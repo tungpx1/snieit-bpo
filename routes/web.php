@@ -126,8 +126,13 @@ Route::group(
     function () {
         Route::get('list', [\App\Http\Controllers\HandoverPaperController::class, 'index'])->name('handover_paper.list');
         Route::get('verify', [\App\Http\Controllers\HandoverPaperController::class, 'verify'])->name('handover_paper.verify');
+        
     }
 );
+
+Route::post('/handover-paper/upload-pdf', 'HandoverPaperController@uploadPdf');
+Route::post('/preview-assets', [\App\Http\Controllers\HandoverPaperController::class, 'previewHandoverPaper'])->name('preview.handover');
+Route::post('/handover-submit', [HandoverPaperController::class, 'submitHandover'])->name('handover.submit');
 
 /*
 |
