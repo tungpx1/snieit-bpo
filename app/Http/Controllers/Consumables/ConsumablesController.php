@@ -208,4 +208,12 @@ class ConsumablesController extends Controller
         return redirect()->route('consumables.index')
             ->with('error', trans('admin/consumables/message.does_not_exist'));
     }
+
+    // File: app/Http/Controllers/ConsumableController.php
+
+    public function getConsumablesByCompanyId($companyId)
+    {
+        $consumables = Consumable::where('company_id', $companyId)->get();
+        return response()->json($consumables);
+    }
 }

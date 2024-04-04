@@ -39,6 +39,7 @@
 
                             for (var i in data.rows) {
                                 var asset = data.rows[i];
+                                $('.select-bulk-checkin-assets').append(`<option value="${asset.id}">${asset.model.name} - ${asset.asset_tag} - ${asset.serial}</option>`);
                                 table_html += '<tr>';
                                 if (asset.image != null) {
                                     table_html += '<td class="col-md-1"><a href="' + asset.image + '" data-toggle="lightbox" data-type="image"><img src="' + asset.image + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;"></a></td>';
@@ -59,6 +60,7 @@
                                 table_html += '<td class="col-md-4">' + asset.serial + '</td>';
                                 table_html += "</tr>";
                             }
+                            $('.select-bulk-checkin-assets').select2();
                         } else {
                             table_html += '<tr><td colspan="4">{{ trans('admin/users/message.user_has_no_assets_assigned') }}</td></tr>';
                         }

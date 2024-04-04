@@ -11,6 +11,10 @@ Route::group(['prefix' => 'consumables', 'middleware' => ['auth']], function () 
         [Consumables\ConsumableCheckoutController::class, 'create']
     )->name('consumables.checkout.show');
 
+    Route::get('bulkcheckout',
+    [Consumables\ConsumableCheckoutController::class, 'showBulkCheckout']
+    )->name('consumables.bulkcheckout.show');
+
     Route::post(
         '{consumablesID}/checkout',
         [Consumables\ConsumableCheckoutController::class, 'store']

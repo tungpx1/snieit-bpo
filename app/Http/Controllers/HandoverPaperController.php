@@ -5,20 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\CheckInOutRequest;
-use App\Http\Requests\AssetCheckoutRequest;
+//use App\Http\Controllers\CheckInOutRequest;
+//use App\Http\Requests\AssetCheckoutRequest;
 use App\Models\User;
 use App\Models\HandoverPaper;
 use Dompdf\Dompdf;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Google_Client;
 use Google_Service_Drive;
 use Google_Service_Drive_DriveFile;
 class HandoverPaperController extends Controller
 
 {
-
 
     public function index(Request $request) {
         $where = [];
@@ -34,8 +34,11 @@ class HandoverPaperController extends Controller
             array_push($where, array('asset_tag', '=', $request->asset_tag));
         }
 
+        if ($request->has('status') && $request->status != -1) {
+            array_push($where, array('is_verify', '=', $request->status));
+        }
         if ($request->has('type') && $request->type != -1) {
-            array_push($where, array('is_verify', '=', $request->type));
+            array_push($where, array('type', '=', $request->type));
         }
 
         $papers = HandoverPaper::where($where)
@@ -51,6 +54,7 @@ class HandoverPaperController extends Controller
                 'number_of_report' => $request->number_of_report,
                 'user_search' => $request->user,
                 'asset_search' => $request->asset,
+                'status' => $request->status,
                 'type' => $request->type
             ]
         );
@@ -160,7 +164,7 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
 }
 
 
-    public function previewHandoverPaper(AssetCheckoutRequest $request)
+    public function previewHandoverPaper(Request $request)
     {
         $assetId = $request->input('asset_id');
         $asset = Asset::find($assetId);
@@ -201,9 +205,151 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
         ];
     
         return response()->json($data);
-
-
         // return view('handover_paper.preview', compact('asset', 'checkoutData', 'target','checkoutUser','now','numberOfReport'));
+    }
+
+
+    public function previewBulkcheckout(Request $request)
+    {
+        try {
+            $iserror = 0;
+            $iserror2 = 0;
+            if (! is_array($request->get('selected_assets'))&& !$request->get('bulk_assettag_assets')) {
+
+                $info ="Please choose Assets to checkout!";
+                $error = [
+                    'info' => $info
+                ];
+                return response()->json($error);
+            }
+
+            if ($request->get('selected_assets') && $request->get('bulk_serial_assets')) {
+
+                $info ="Please choose only option. Assets field or bulk serial assets fields";
+                $error = [
+                    'info' => $info
+                ];
+                return response()->json($error);
+            }
+            $checkoutUser = Auth::user();
+            $fullNameUserCheckout = $checkoutUser->getFullNameAttribute();
+            $checkoutUserID = $checkoutUser->id;
+
+    
+            $asset_ids = [];
+            $asset_tags = [];
+            $asset_names = [];
+            $asset_notes = [];
+            $asset_ids_arr = [];
+
+            if ($request->get('selected_assets')) {
+                $asset_ids = array_filter($request->get('selected_assets'));
+                $asset_ids_string = implode(',', $asset_ids);
+                $asset_ids_arr = explode(',', $asset_ids_string);
+            }
+
+            if ($request->get('bulk_assettag_assets')) {
+                $errorTagsUndeploy = [];
+                $bulkAssetTags = $request->get('bulk_assettag_assets');
+                $assetTags = preg_split('/\r\n|\r|\n/', $bulkAssetTags, -1, PREG_SPLIT_NO_EMPTY);         
+                $asset_ids_arr = [];
+                foreach ($assetTags as $tag) {
+                    $asset = Asset::where('asset_tag', trim($tag))->first();
+                    if (!$asset || $asset->assigned_to || $asset->status_id != 2) {
+                        $errorTagsUndeploy[] = $asset->asset_tag;
+                        $iserror2 = 2;
+
+                    } else {
+                        $asset_ids_arr[] = $asset->id;
+                    }
+                }
+            }
+
+
+            foreach ($asset_ids_arr as $asset_id) {
+                $asset = Asset::findOrFail($asset_id);
+                $asset_tags[] = $asset->asset_tag;
+                $asset_names[] = $asset->name;
+                $asset_notes[] = $asset->notes;
+            }
+     
+            $target = User::find($request->input('assigned_user'));
+            $fullNameUserTarget = $target ? $target->getFullNameAttribute() : '';
+            $targetUserID = $target->id;
+                
+            $length = count($asset_tags);
+
+            $now = new \DateTime('NOW');
+            $checkoutDate = $now->format('d/m/Y');
+            $numberOfReport = $now->format('dmy');
+            $numberOfReport = "SGS-{$numberOfReport}-{$target->employee_num}";
+                
+            $data = [
+
+                'fullNameUserTarget' => $fullNameUserTarget,
+                'iserror' => $iserror,
+                'targetUserID' => $targetUserID,
+                'fullNameUserCheckout' => $fullNameUserCheckout,
+                'checkoutUserID' => $checkoutUserID,
+                'checkoutDate' => $checkoutDate,
+                'length' => $length,
+                'asset_ids' => $asset_ids,
+                'asset_ids_arr' => $asset_ids_arr,
+                'asset_tags' => $asset_tags,
+                'asset_names' => $asset_names,
+                'asset_notes' => $asset_notes,
+                'numberOfReport' => $numberOfReport
+            ];
+            
+            $settings = \App\Models\Setting::getSettings();        
+            $errAssettOtherCompany = [];
+            if ($settings->full_multiple_companies_support){
+                foreach ($asset_ids_arr as $asset_id) {
+                    $asset = Asset::findOrFail($asset_id);
+                    if ($target->company_id != $asset->company_id){
+                        $iserror = 1;
+                        $errAssettOtherCompany[] = $asset->asset_tag;
+                    }
+                }
+            }
+
+
+            if ($iserror == 1|$iserror2 == 2) {
+                $error_info = "One or more selected assets for checkout do not belong to the same company as the person or location they are being transferred to";
+                $lengtherrAssettOtherCompany = count($errAssettOtherCompany);
+                if($iserror2 == 2)
+                {
+                    $lengtherrorTags = count($errorTagsUndeploy);
+                    $iserror = 2;
+                    $error1 = [
+                        'error_info' => $error_info,
+                        'iserror' => $iserror,
+                        'lengtherrAssettOtherCompany' => $lengtherrAssettOtherCompany,
+                        'lengtherrorTags' => $lengtherrorTags,
+                        'errAssettOtherCompany' => $errAssettOtherCompany,
+                        'errorTagsUndeploy' =>$errorTagsUndeploy
+                    ];
+                    return response()->json($error1); // Trả về thông tin về lỗi nếu có lỗi
+                }else if ($iserror2 != 2)
+                {
+                    $error2 = [
+                        'error_info' => $error_info,
+                        'iserror' => $iserror,
+                        'lengtherrAssettOtherCompany' => $lengtherrAssettOtherCompany,
+                        'errAssettOtherCompany' => $errAssettOtherCompany
+                    ];
+                    return response()->json($error2);
+                }
+     
+            }else if($iserror == 0) {
+
+                return response()->json($data);       
+            }
+            
+            } catch (ModelNotFoundException $e) {
+                return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
+            }
+            
     }
 
 

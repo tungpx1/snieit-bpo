@@ -17,6 +17,9 @@
          #type-search {
              width: 160px;
          }
+         #status-search {
+             width: 160px;
+         }
      </style>
      
     <div class="row">
@@ -24,41 +27,54 @@
             <div class="box box-default">
                 <div class="box-body">
                     <div class="row" style="margin-bottom: 10px;">
-                        <div class="col-md-5">
-                            <form class="form-inline">
-                                <!-- <div class="form-group">
-                                    <label for="exampleInputName2">Number of Report</label>
-                                    <input type="text" class="form-control" id="exampleInputName2" name="number_of_report" value="{{ $number_of_report }}">
-                                </div> -->
-                                <div class="form-group">
-                                    <label for="user-search">Receiver</label>
-                                    <select class="js-example-basic-single form-control" name="user" id="user-search">
-                                        <option></option>
-                                        @foreach($users as $key => $user)
-                                        <option value="{{ $user->id }}" @if ($user_search == $user->id) selected="selected" @endif>{{ $user->getFullNameAttribute() }}</option>
-                                        @endforeach
-                                    </select>
+                        <div class="col-md-12">
+                        <form class="form-inline">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="user-search">Receiver</label>
+                                        <select class="js-example-basic-single form-control" name="user" id="user-search">
+                                            <option></option>
+                                            @foreach($users as $key => $user)
+                                            <option value="{{ $user->id }}" @if ($user_search == $user->id) selected="selected" @endif>{{ $user->getFullNameAttribute() }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="asset-search">Asset_Tag</label>
-                                    <select class="js-example-basic-single form-control" name="asset_tag" id="asset-search">
-                                        <option></option>
-                                        @foreach($assets as $key => $asset)
-                                            <option value="{{ $asset->asset_tag }}" @if ($asset_search == $asset->asset_tag) selected="selected" @endif>{{ $asset->asset_tag }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="asset-search">Asset_Tag</label>
+                                        <select class="js-example-basic-single form-control" name="asset_tag" id="asset-search">
+                                            <option></option>
+                                            @foreach($assets as $key => $asset)
+                                                <option value="{{ $asset->asset_tag }}" @if ($asset_search == $asset->asset_tag) selected="selected" @endif>{{ $asset->asset_tag }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="status-search">Status Handover Paper </label>
+                                        <select class="js-example-basic-single form-control" name="status" id="status-search">
+                                            <option value="-1" @if ($status == -1) selected @endif>Show All</option>
+                                            <option value="0" @if ($status == 0) selected @endif>Unconfirmed</option>
+                                            <option value="1" @if ($status == 1) selected @endif>Confirmed</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="type-search">Type Handover Paper </label>
-                                    <select class="js-example-basic-single form-control" name="type" id="type-search">
-                                        <option value="-1" @if ($type == -1) selected @endif>Show All</option>
-                                        <option value="0" @if ($type == 0) selected @endif>Unconfirmed</option>
-                                        <option value="1" @if ($type == 1) selected @endif>Confirmed</option>
-                                    </select>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="type-search">Type Handover Paper </label>
+                                        <select class="js-example-basic-single form-control" name="type" id="type-search">
+                                            <option value="-1" @if ($type == -1) selected @endif>Show All</option>
+                                            <option value="0" @if ($type == 0) selected @endif>Checkin</option>
+                                            <option value="1" @if ($type == 1) selected @endif>Checkout</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </form>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
                         </div>
                     </div>
                     <div class="row">
@@ -85,8 +101,16 @@
                                         <td>{{ $paper->sender ? $paper->sender->getFullNameAttribute() : '' }}</td>
                                         <td>{{ $paper->receiver ? $paper->receiver->getFullNameAttribute() : '' }}</td>
                                         <td>{{ $paper->asset_tag ? $paper->asset_tag : 'N/A' }}</td>
-                                        <td>{{ $paper->type === 0 ? 'Check out' : 'Check in' }}</td>
-                                        <td>@if ($paper->is_verify) <a class="btn btn-danger" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Unconfirmed</a> @else <a class="btn btn-success" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Confirmed</a> @endif</td>
+                                        <td>{{ $paper->type === 0 ? 'Check in' : 'Check out' }}</td>
+                                        <td>
+                                            @if ($paper->is_verify)
+                                                <a class="btn btn-success" style="color: yellow;" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Confirmed</a>
+                                            @else
+                                                <a class="btn btn-danger" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Unconfirmed</a>
+                                            @endif
+                                        </td>
+
+                                        <!-- <td>@if ($paper->is_verify) <a class="btn btn-success" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Confirmed</a> @else <a class="btn btn-danger" href="{{ route('handover_paper.verify', ['id' => $paper]) }}">Unconfirmed</a> @endif</td> -->
                                     </tr>
                                 @endforeach
                                 </tbody>

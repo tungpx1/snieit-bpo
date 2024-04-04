@@ -32,6 +32,7 @@ class ComponentsTransformer
                 'name' => e($component->location->name),
             ] : null,
             'qty' => ($component->qty != '') ? (int) $component->qty : null,
+            'capacity' => ($component->capacity != '') ? (int) $component->capacity : null,
             'min_amt' => ($component->min_amt != '') ? (int) $component->min_amt : null,
             'category' => ($component->category) ? [
                 'id' => (int) $component->category->id,

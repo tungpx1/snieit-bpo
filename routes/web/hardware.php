@@ -186,12 +186,22 @@ Route::group(
             [BulkAssetsController::class, 'showCheckout']
         )->name('hardware.bulkcheckout.show');
 
-        Route::post('bulkcheckout',
-            [BulkAssetsController::class, 'storeCheckout']
-        )->name('hardware.bulkcheckout.store');
         Route::post('bulkcheckin',
         [BulkAssetsController::class, 'bulkCheckin']
     )->name('hardware.bulkcheckin');
+
+        Route::get('bulkcheckin2',
+        [BulkAssetsController::class, 'showCheckin']
+    )->name('hardware.bulkcheckin.show');
+
+        Route::post('bulkcheckin2',
+        [BulkAssetsController::class, 'bulcheckin2']
+    )->name('hardware.bulkcheckin2');
+
+        Route::post('bulkcheckout',
+        [BulkAssetsController::class, 'storeCheckout']
+    )->name('hardware.bulkcheckout.store');
+
     });
 
 Route::resource('hardware', 

@@ -670,4 +670,10 @@ class UsersController extends Controller
 
         return redirect()->back()->with('error', 'User is not activated, is LDAP synced, or does not have an email address ');
     }
+
+    public function getCompanyByUserId($userId)
+    {
+        $user = User::find($userId);
+        return response()->json(['companyId' => $user->company_id]);
+    }
 }

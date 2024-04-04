@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Transformers\CompaniesTransformer;
 use App\Http\Transformers\SelectlistTransformer;
 use App\Models\Company;
+use App\Models\Consumable;
 use Illuminate\Http\Request;
 use App\Http\Requests\ImageUploadRequest;
 use Illuminate\Support\Facades\Storage;
@@ -192,4 +193,16 @@ class CompaniesController extends Controller
 
         return (new SelectlistTransformer)->transformSelectlist($companies);
     }
+
+    public function consumablesByCompany(Request $request, $companyId)
+    {
+        $this->authorize('view', Consumable::class); 
+    
+        // Lấy tất cả consumables có company_id tương ứng.
+        $consumables = Consumable::where('company_id', $companyId)->get();
+    
+        return response()->json($consumables);
+    }
+
+    
 }

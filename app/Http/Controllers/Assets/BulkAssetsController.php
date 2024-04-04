@@ -70,7 +70,7 @@ class BulkAssetsController extends Controller
                     return (new Label)
                         ->with('assets', $assets_found)
                         ->with('settings', Setting::getSettings())
-                        ->with('bulkedit', true)
+                        ->with('bulkedit', true)                                                                                                                                                                  
                         ->with('count', 0);
 
                 case 'delete':
@@ -592,4 +592,16 @@ class BulkAssetsController extends Controller
             return redirect()->route('users.show', $user->id)->with('success', trans('admin/hardware/message.checkin.multi_success', ['count' => $count ]));
         }
     }
+
+    public function showCheckin(Request $request)
+    {
+        return view('hardware/bulk-checkin2');
+    }
+
+    public function bulkCheckin2(Request $request)
+    {
+        
+    }
+
+
 }

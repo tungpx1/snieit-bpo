@@ -137,6 +137,8 @@
                             @endif
                         </div>
                     </div>
+                    <h3 class="navbar-brand no-hover navbar">Không có việc gì khó</h3>
+                    <h3 class="navbar-brand no-hover navbar">Chỉ sợ lòng không bền</h3>
 
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
@@ -533,6 +535,15 @@
                                         </li>
                                     @endcan
 
+
+                                    @can('checkin', \App\Models\Asset::class)
+                                        <li{!! (Request::is('hardware/bulk-checkin2') ? ' class="active"' : '') !!}>
+                                            <a href="{{ route('hardware.bulkcheckin.show') }}">
+                                                Bulk Checkin
+                                            </a>
+                                        </li>
+                                    @endcan
+
                                     @can('checkout', \App\Models\Asset::class)
                                         <li{!! (Request::is('hardware/bulkcheckout') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('hardware.bulkcheckout.show') }}">
@@ -590,14 +601,40 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('view', \App\Models\Consumable::class)
+
+                        <!-- @can('view', \App\Models\Consumable::class)
                             <li{!! (Request::is('consumables*') ? ' class="active"' : '') !!}>
                                 <a href="{{ url('consumables') }}">
                                     <i class="fas fa-tint fa-fw"></i>
                                     <span>{{ trans('general.consumables') }}</span>
                                 </a>
                             </li>
+                        @endcan -->
+
+                        @can('view', \App\Models\Consumable::class)
+                            <li class="treeview{{ (Request::is('consumables*') ? ' active' : '') }}">
+                                <a href="#">
+                                    <i class="fas fa-tint fa-fw"></i> <span>{{ trans('general.consumables') }}</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                        
+                                    <li{!! (Request::is('consumables') ? ' class="active"' : '') !!}>
+                                        <a href="{{ route('consumables.index') }}">
+                                            <i class="far fa-circle fa-fw"></i> {{ trans('general.list_all') }}
+                                        </a>
+                                    </li>
+                                    @can('bulkCheckout', \App\Models\Consumable::class)
+                                        <li{!! (Request::is('consumables/bulk-checkout') ? ' class="active"' : '') !!}>
+                                            <a href="{{ route('consumables.bulkcheckout.show') }}">
+                                                <i class="far fa-circle fa-fw"></i> {{ trans('general.bulk_checkout') }}
+                                            </a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
                         @endcan
+
                         @can('view', \App\Models\Component::class)
                             <li{!! (Request::is('components*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('components.index') }}">

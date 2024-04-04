@@ -131,8 +131,12 @@ Route::group(
 );
 
 Route::post('/handover-paper/upload-pdf', 'HandoverPaperController@uploadPdf');
-Route::post('/preview-assets', [\App\Http\Controllers\HandoverPaperController::class, 'previewHandoverPaper'])->name('preview.handover');
+Route::post('/preview-assets', [HandoverPaperController::class, 'previewHandoverPaper'])->name('preview.handover');
+Route::post('/preview-bulcheckout', [HandoverPaperController::class, 'previewBulkcheckout'])->name('preview.bulkcheckout');
 Route::post('/handover-submit', [HandoverPaperController::class, 'submitHandover'])->name('handover.submit');
+
+Route::get('/get-company/{userId}', 'UserController@getCompanyByUserId');
+Route::get('/get-consumables/{companyId}', 'ConsumableController@getConsumablesByCompanyId');
 
 /*
 |

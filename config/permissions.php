@@ -246,6 +246,40 @@ return [
         ],
     ],
 
+    'Desk' => [
+        [
+            'permission' => 'Desk.view',
+            'label'      => 'View',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'desk.create',
+            'label'      => 'Create ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'desk.edit',
+            'label'      => 'Edit ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'desk.delete',
+            'label'      => 'Delete ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'desk.link',
+            'label'      => 'Link ',
+            'note'       => '',
+            'display'    => true,
+        ],
+    ],
+
+
 
     'Components' => [
         [

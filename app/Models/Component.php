@@ -32,6 +32,7 @@ class Component extends SnipeModel
     public $rules = [
         'name'           => 'required|min:3|max:255',
         'qty'            => 'required|integer|min:1',
+        'capacity'       => 'nullable|integer|min:0',
         'category_id'    => 'required|integer|exists:categories,id',
         'supplier_id'    => 'nullable|integer|exists:suppliers,id',
         'company_id'     => 'integer|nullable|exists:companies,id',
@@ -66,6 +67,7 @@ class Component extends SnipeModel
         'min_amt',
         'order_number',
         'qty',
+        'capacity',
         'serial',
         'notes',
     ];

@@ -250,6 +250,7 @@ return [
     'select_statuslabel'	=> 'Select Status',
     'select_company'    	=> 'Select Company',
     'select_asset'    		=> 'Select Asset',
+    'select_consumable'     => 'Select Consumable',
     'settings'				=> 'Settings',
     'show_deleted'  		=> 'Show Deleted',
     'show_current'  		=> 'Show Current',

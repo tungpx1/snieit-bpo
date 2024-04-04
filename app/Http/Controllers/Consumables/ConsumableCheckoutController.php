@@ -103,4 +103,9 @@ class ConsumableCheckoutController extends Controller
         // Redirect to the new consumable page
         return redirect()->route('consumables.index')->with('success', trans('admin/consumables/message.checkout.success'));
     }
+
+    public function showBulkCheckout(Request $request)
+    {
+        return view('consumables/bulk-checkout');
+    }
 }

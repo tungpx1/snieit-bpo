@@ -41,6 +41,7 @@ class ComponentsController extends Controller
                 'purchase_date',
                 'purchase_cost',
                 'qty',
+                'capacity',
                 'image',
                 'notes',
             ];
@@ -74,6 +75,9 @@ class ComponentsController extends Controller
 
         if ($request->filled('notes')) {
             $components->where('notes','=',$request->input('notes'));
+        }
+        if ($request->filled('capacity')) {
+            $components->where('capacity','=',$request->input('capacity'));
         }
 
         // Make sure the offset and limit are actually integers and do not exceed system limits
