@@ -137,8 +137,8 @@
                             @endif
                         </div>
                     </div>
-                    <h3 class="navbar-brand no-hover navbar">Không có việc gì khó</h3>
-                    <h3 class="navbar-brand no-hover navbar">Chỉ sợ lòng không bền</h3>
+                    <!-- <h3 class="navbar-brand no-hover navbar">Không có việc gì khó</h3>
+                    <h3 class="navbar-brand no-hover navbar">Chỉ sợ lòng không bền</h3> -->
 
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">

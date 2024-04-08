@@ -58,6 +58,107 @@
                                 </div>
                         </div>
 
+
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div id="modal">
+                                        <h1 style="text-align: center;">CÔNG TY TNHH SGS VIỆT NAM</h1>
+                                        <p style="text-align: center;">Tầng 7, 9, 10 Toà nhà VTC 18 Tam Trinh, Phường
+                                            Minh Khai, Quận Hai Bà Trưng, Hà Nội</p>
+                                        <h2 style="text-align: center;">Handover Paper</h2>
+                                        <p style="text-align: center;">Số: <span id="numberOfReport"></span>
+                                        </p>
+                                        <table>
+                                            <tr>
+                                                <th>Handover Details</th>
+                                                <th>Information</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Date of Handover:</td>
+                                                <td>
+                                                    <span id="dateOfHandover"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Handover From:</td>
+                                                <td>
+                                                    <span id="handoverFrom"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Handover To:</td>
+                                                <td>
+                                                    <span id="handoverTo"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Reason for Handover:</td>
+                                                <td>[Reason for handover, e.g., End of project, Change in management]
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <h2>List of Items Handed Over</h2>
+                                        <table id="dynamicTable">
+                                            <tr>
+                                                <th>Asset_tag</th>
+                                                <th>Item Name</th>
+                                                <th>Quantity</th>
+                                                <th>Description</th>
+                                            </tr>
+                                            <tr>
+
+                                            </tr>
+                                            <!-- Add more items here -->
+                                        </table>
+                                        <h2>Additional Notes</h2>
+                                        <p>[Additional notes about the handover process or any other relevant information]</p>
+                                        <div class="signatures">
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h4 style="padding-top: 10px">{{trans('general.sign_tos')}}</h4>
+                                            <div id="signature-pad" class="m-signature-pad">
+                                                <div
+                                                    class="m-signature-pad--body col-md-12 col-sm-12 col-lg-12 col-xs-12">
+                                                    <canvas></canvas>
+                                                    <div class="m-signature-pad--title--signer"></div>
+                                                    <div class="m-signature-pad--title--signer2"></div>
+                                                    < <input type="hidden" name="signature_output"
+                                                        id="signature_output">
+                                                </div>
+                                                <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12 text-center">
+                                                    <button type="button" class="btn btn-sm btn-default clear"
+                                                        data-action="clear"
+                                                        id="clear_button">{{trans('general.clear_signature')}}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" id="print-button" class="btn btn-default">Save file
+                                                PDF</button>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12 text-center">
+                                            <input type="file" id="pdf-file" name="pdf-file" accept=".pdf">
+                                        </div>
+                                        <div class="box-footer text-right">
+                                            <button type="button" class="btn btn-success" id="upload-PDF">
+                                                <i class="fa fa-check icon-white" aria-hidden="true"></i>
+                                                {{ trans('general.submit') }}
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                         <!-- <div class="form-group">
                             <label class="col-md-3 control-label">Export handover paper</label>
                             <div class="col-md-8" style="padding-top:7px;">
@@ -140,11 +241,14 @@
     });
 
 
+
+
+
 $('#preview-handover-paper').on('click', function() {
     // Tạo một form mới
     var form = $('<form>', {
         'method': 'post',
-        'action': '{{ route('preview.bulkcheckout') }}'
+        'action': '{{ route('preview.bulkcheckin') }}'
     });
 
     // Thêm CSRF token vào form
@@ -164,7 +268,7 @@ $('#preview-handover-paper').on('click', function() {
         });
         // Thêm trường input vào form mới
         form.append(input);
-        //console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
+        console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
 
     });
 

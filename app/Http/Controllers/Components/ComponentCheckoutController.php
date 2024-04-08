@@ -7,6 +7,7 @@ use App\Events\ComponentCheckedOut;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Component;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
@@ -82,12 +83,15 @@ class ComponentCheckoutController extends Controller
 
         // Check if the user exists
         $asset = Asset::find($request->input('asset_id'));
-
+        $category = Category::find($component->category_id);
+      
         $settings = \App\Models\Setting::getSettings();
-        if ($settings->full_multiple_companies_support){
-            if ($component->company_id != $asset->company_id){
+        if ($settings->full_multiple_companies_support ){
+            //exclude CPU Laptop Compoents
+            if ($component->company_id != $asset->company_id && $category->name == 'CPU Laptop') {
+            } else {
                 return redirect()->route('components.index')->with('error', trans('admin/components/message.checkout.asset_missmatch'));
-            }
+            }              
         }    
 
         // Update the component data

@@ -534,7 +534,7 @@ $('#preview-handover-paper').on('click', function() {
         });
         // Thêm trường input vào form mới
         form.append(input);
-        //console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
+        console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
 
     });
 
@@ -545,13 +545,57 @@ $('#preview-handover-paper').on('click', function() {
         data: form.serialize(), // Serialize dữ liệu của form mới để gửi
         success: function(response) {
             // Xử lý khi yêu cầu thành công
-            if(response.iserror == 2)
+            console.log('Code error:',response.iserror);
+
+            if(response.iserror == 5)
             {
                 $('#errodModal').modal('show');
                 $('#ErrorTable tr').not(':first').remove();
-                //console.log(response.error_info);   
-                //console.log(response.length);
-                console.log(response.errorTagsUndeploy);
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose User to checkout!' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+
+            }
+
+            else if(response.iserror == 4)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose Assets to checkout!' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+
+            }
+            else if(response.iserror == 3)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose only option. Assets field or bulk_asset_tag' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+            }
+            else if(response.iserror == 2)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
 
                 for (var i = 0; i < response.lengtherrAssettOtherCompany; i++) {
                     var newRow = '<tr>' +
@@ -571,13 +615,22 @@ $('#preview-handover-paper').on('click', function() {
                     $('#ErrorTable').append(newRow);
 
                 }
+                for (var i = 0; i < response.lengthAssetTagNotFound; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + response.assetTagNotFound[i] + '</td>' +
+                        '<td>' + 'Assets Not Found' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
             }else if (response.iserror == 1)
             {
                 $('#errodModal').modal('show');
                 $('#ErrorTable tr').not(':first').remove();
                 //console.log(response.error_info);   
                 //console.log(response.length);
-                console.log(response.errorTagsUndeploy);
+                //console.log(response.errorTagsUndeploy);
 
                 for (var i = 0; i < response.lengtherrAssettOtherCompany; i++) {
                     var newRow = '<tr>' +

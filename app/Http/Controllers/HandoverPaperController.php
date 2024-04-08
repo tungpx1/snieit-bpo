@@ -209,25 +209,49 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
     }
 
 
-    public function previewBulkcheckout(Request $request)
+    public function previewHandoverPaperBulkcheckout(Request $request)
     {
         try {
             $iserror = 0;
             $iserror2 = 0;
-            if (! is_array($request->get('selected_assets'))&& !$request->get('bulk_assettag_assets')) {
 
-                $info ="Please choose Assets to checkout!";
+            $asset_ids = [];
+            $asset_tags = [];
+            $asset_names = [];
+            $asset_notes = [];
+            $asset_ids_arr = [];
+
+            $asset_ids = array_filter($request->get('selected_assets'));
+
+            if(!$request->get('assigned_user'))
+            {
+                $info ="Please choose User to checkout!";
+                $iserror = 5;
                 $error = [
-                    'info' => $info
+                    'info' => $info,
+                    'iserror' => $iserror
                 ];
                 return response()->json($error);
             }
 
-            if ($request->get('selected_assets') && $request->get('bulk_serial_assets')) {
+            if (count($asset_ids) == 0 && !$request->get('bulk_assettag_assets')) {
 
-                $info ="Please choose only option. Assets field or bulk serial assets fields";
+                $info ="Please choose Assets to checkout!";
+                $iserror = 4;
                 $error = [
-                    'info' => $info
+                    'info' => $info,
+                    'iserror' => $iserror
+                ];
+                return response()->json($error);
+            }
+
+            if (count($asset_ids) > 0 && $request->get('bulk_assettag_assets')) {
+
+                $info ="Please choose only option. Assets field or bulk_asset_tag";
+                $iserror = 3;
+                $error = [
+                    'info' => $info,
+                    'iserror' => $iserror
                 ];
                 return response()->json($error);
             }
@@ -242,7 +266,7 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
             $asset_notes = [];
             $asset_ids_arr = [];
 
-            if ($request->get('selected_assets')) {
+            if (count($asset_ids) >= 1) {
                 $asset_ids = array_filter($request->get('selected_assets'));
                 $asset_ids_string = implode(',', $asset_ids);
                 $asset_ids_arr = explode(',', $asset_ids_string);
@@ -255,11 +279,15 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
                 $asset_ids_arr = [];
                 foreach ($assetTags as $tag) {
                     $asset = Asset::where('asset_tag', trim($tag))->first();
-                    if (!$asset || $asset->assigned_to || $asset->status_id != 2) {
+                    if (!$asset) {
+                        $assetTagNotFound[] = $tag;
+                        $iserror2 = 2;
+                    } else if ( $asset->assigned_to || $asset->status_id != 2)
+                    {
+                        $assetTagNotFound = [];
                         $errorTagsUndeploy[] = $asset->asset_tag;
                         $iserror2 = 2;
-
-                    } else {
+                    }else {
                         $asset_ids_arr[] = $asset->id;
                     }
                 }
@@ -320,14 +348,17 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
                 if($iserror2 == 2)
                 {
                     $lengtherrorTags = count($errorTagsUndeploy);
+                    $lengthAssetTagNotFound = count($assetTagNotFound);
                     $iserror = 2;
                     $error1 = [
                         'error_info' => $error_info,
                         'iserror' => $iserror,
                         'lengtherrAssettOtherCompany' => $lengtherrAssettOtherCompany,
-                        'lengtherrorTags' => $lengtherrorTags,
                         'errAssettOtherCompany' => $errAssettOtherCompany,
-                        'errorTagsUndeploy' =>$errorTagsUndeploy
+                        'lengtherrorTags' => $lengtherrorTags,
+                        'errorTagsUndeploy' =>$errorTagsUndeploy,
+                        'lengthAssetTagNotFound' => $lengthAssetTagNotFound,
+                        'assetTagNotFound' =>$assetTagNotFound
                     ];
                     return response()->json($error1); // Trả về thông tin về lỗi nếu có lỗi
                 }else if ($iserror2 != 2)
