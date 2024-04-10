@@ -645,10 +645,10 @@ $('#preview-handover-paper').on('click', function() {
             }else if(response.iserror == 0)
             {
                 $('#myModal').modal('show');
-                //console.log(response.fullNameUserTarget);
-                //console.log(response.asset_ids_arr);
-                //console.log(response.asset_tags);
-                //console.log(response.asset_tags[0]);
+                console.log(response.fullNameUserTarget);
+                console.log(response.asset_ids_arr);
+                console.log(response.asset_tags);
+                console.log(response.asset_tags[0]);
                 assetId = response.asset_ids_arr[0];
                 checkoutUserID = response.checkoutUserID;
                 targetID = response.targetUserID;

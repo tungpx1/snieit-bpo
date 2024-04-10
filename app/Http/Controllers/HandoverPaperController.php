@@ -260,13 +260,9 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
             $checkoutUserID = $checkoutUser->id;
 
     
-            $asset_ids = [];
-            $asset_tags = [];
-            $asset_names = [];
-            $asset_notes = [];
-            $asset_ids_arr = [];
 
-            if (count($asset_ids) >= 1) {
+
+            if ($request->get('selected_assets')) {
                 $asset_ids = array_filter($request->get('selected_assets'));
                 $asset_ids_string = implode(',', $asset_ids);
                 $asset_ids_arr = explode(',', $asset_ids_string);
@@ -312,23 +308,7 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
             $numberOfReport = $now->format('dmy');
             $numberOfReport = "SGS-{$numberOfReport}-{$target->employee_num}";
                 
-            $data = [
 
-                'fullNameUserTarget' => $fullNameUserTarget,
-                'iserror' => $iserror,
-                'targetUserID' => $targetUserID,
-                'fullNameUserCheckout' => $fullNameUserCheckout,
-                'checkoutUserID' => $checkoutUserID,
-                'checkoutDate' => $checkoutDate,
-                'length' => $length,
-                'asset_ids' => $asset_ids,
-                'asset_ids_arr' => $asset_ids_arr,
-                'asset_tags' => $asset_tags,
-                'asset_names' => $asset_names,
-                'asset_notes' => $asset_notes,
-                'numberOfReport' => $numberOfReport
-            ];
-            
             $settings = \App\Models\Setting::getSettings();        
             $errAssettOtherCompany = [];
             if ($settings->full_multiple_companies_support){
@@ -374,6 +354,23 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
      
             }else if($iserror == 0) {
 
+                $data = [
+
+                    'fullNameUserTarget' => $fullNameUserTarget,
+                    'iserror' => $iserror,
+                    'targetUserID' => $targetUserID,
+                    'fullNameUserCheckout' => $fullNameUserCheckout,
+                    'checkoutUserID' => $checkoutUserID,
+                    'checkoutDate' => $checkoutDate,
+                    'length' => $length,
+                    'asset_ids' => $asset_ids,
+                    'asset_ids_arr' => $asset_ids_arr,
+                    'asset_tags' => $asset_tags,
+                    'asset_names' => $asset_names,
+                    'asset_notes' => $asset_notes,
+                    'numberOfReport' => $numberOfReport
+                ];
+            
                 return response()->json($data);       
             }
             
