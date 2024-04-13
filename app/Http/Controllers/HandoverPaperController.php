@@ -80,6 +80,7 @@ class HandoverPaperController extends Controller
         $checkoutUser = $request->input('checkoutUser');
         $target = $request->input('target');
         $file = $request->file('pdf-file');
+        $typeHanoverPaper = $request->input('typeHanoverPaper');
 
         $admin = User::find($checkoutUser);
         $targetuser = User::find($target);
@@ -103,6 +104,7 @@ class HandoverPaperController extends Controller
             $fileId = $this->uploadFileToGoogleDrive($path);
             $msg .= ' Here is link of handover paper <a href="https://docs.google.com/file/d/'. $fileId . '/view"> https://docs.google.com/file/d/'.$fileId .'/view  </a>';
             $link = 'https://docs.google.com/file/d/' . $fileId . '/view';
+         
             $newHandoverPaper = new HandoverPaper([
                 'link' => 'https://docs.google.com/file/d/'. $fileId . '/view',
                 'sender_id' => $admin->id,
@@ -110,7 +112,7 @@ class HandoverPaperController extends Controller
                 'asset_tag' => $asset->asset_tag,
                 'number_of_report' => $numberOfReport,
                 'is_verify' => 0,
-                'type' => 1
+                'type' => $typeHanoverPaper
             ]);
 
             $newHandoverPaper->save();
@@ -192,6 +194,7 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
                 return redirect()->to("hardware/$assetId/checkout")->with('error', trans('general.error_user_or_location_company'));
             }
         }
+        $typeHanoverPaper = 1;
 
         $data = [
             'asset' => $asset,
@@ -201,7 +204,8 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
             'fullNameUserCheckout' => $fullNameUserCheckout,
             'checkoutUserID' => $checkoutUserID,
             'checkoutDate' => $checkoutDate,
-            'numberOfReport' => $numberOfReport
+            'numberOfReport' => $numberOfReport,
+            'typeHanoverPaper' =>$typeHanoverPaper
         ];
     
         return response()->json($data);
@@ -352,10 +356,180 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
                     return response()->json($error2);
                 }
      
-            }else if($iserror == 0) {
+                }else if($iserror == 0) {
+
+                    $typeHanoverPaper = 1;
+                    $data = [
+
+                        'fullNameUserTarget' => $fullNameUserTarget,
+                        'iserror' => $iserror,
+                        'targetUserID' => $targetUserID,
+                        'fullNameUserCheckout' => $fullNameUserCheckout,
+                        'checkoutUserID' => $checkoutUserID,
+                        'checkoutDate' => $checkoutDate,
+                        'length' => $length,
+                        'asset_ids' => $asset_ids,
+                        'asset_ids_arr' => $asset_ids_arr,
+                        'asset_tags' => $asset_tags,
+                        'asset_names' => $asset_names,
+                        'asset_notes' => $asset_notes,
+                        'numberOfReport' => $numberOfReport,
+                        'typeHanoverPaper' =>$typeHanoverPaper
+
+                    ];
+                
+                    return response()->json($data);       
+                }
+            
+            } catch (ModelNotFoundException $e) {
+                return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
+            }
+            
+    }
+
+    public function previewHandoverPaperBulkcheckin(Request $request)
+    {
+        try{
+            $iserror = 0;
+            $iserror2 = 0;
+
+
+            $asset_ids = [];
+            $asset_tags = [];
+            $asset_names = [];
+            $asset_notes = [];
+            $asset_ids_arr = [];
+
+            if(!$request->get('assigned_user'))
+            {
+                $info ="Please choose User to checkout!";
+                $iserror = 5;
+                $error = [
+                    'info' => $info,
+                    'iserror' => $iserror
+                ];
+                return response()->json($error);
+            }
+
+            $asset_ids = array_filter($request->get('assets'));
+
+            if (count($asset_ids) == 0 && !$request->get('bulk_assettag_assets')) {
+
+                $info ="Please choose Assets to checkin!";
+                $iserror = 4;
+                $error = [
+                    'info' => $info,
+                    'iserror' => $iserror
+                ];
+                return response()->json($error);
+            }
+            if (count($asset_ids) > 0 && $request->get('bulk_assettag_assets')) {
+
+                $info ="Please choose only option. Assets field or bulk_asset_tag";
+                $iserror = 3;
+                $error = [
+                    'info' => $info,
+                    'iserror' => $iserror
+                ];
+                return response()->json($error);
+            }
+            $ownAssets = Asset::where('assigned_to', $request->assigned_user)->pluck('id')->toArray();
+            
+            $checkoutUser = Auth::user();
+            $fullNameUserCheckout = $checkoutUser->getFullNameAttribute();
+            $checkoutUserID = $checkoutUser->id;
+            $target = User::find($request->input('assigned_user'));
+            $fullNameUserTarget = $target ? $target->getFullNameAttribute() : '';
+            $targetUserID = $target->id;
+                
+            $now = new \DateTime('NOW');
+            $checkoutDate = $now->format('d/m/Y');
+            $numberOfReport = $now->format('dmy');
+            $numberOfReport = "SGS-{$numberOfReport}-{$target->employee_num}";
+
+            if($request->get('assets'))
+            {
+                $asset_ids = array_filter($request->get('assets'));
+                $asset_ids_string = implode(',', $asset_ids);
+                $asset_ids_arr = explode(',', $asset_ids_string);
+            }
+         
+            if ($request->get('bulk_assettag_assets')) {
+                $errorTagsUndeploy = [];
+                $bulkAssetTags = $request->get('bulk_assettag_assets');
+                $assetTags = preg_split('/\r\n|\r|\n/', $bulkAssetTags, -1, PREG_SPLIT_NO_EMPTY);         
+                $asset_ids_arr = [];
+                foreach ($assetTags as $tag) {
+                    $asset = Asset::where('asset_tag', trim($tag))->first();
+                    if (!$asset) {
+                        $assetTagNotFound[] = $tag;
+                        $iserror2 = 2;
+                    }else {
+                        $asset_ids_arr[] = $asset->id;
+                    }
+                }
+            }
+            $asset_id_notOwners = [];
+            foreach ($asset_ids_arr as $asset_id) {
+                $found = false;
+                foreach ($ownAssets as $ownAsset) {
+                    if ($asset_id == $ownAsset) {
+                        $found = true;
+                        break; 
+                    }
+                }
+                if (!$found) {
+                    $asset_id_notOwners[] = $asset_id;
+                    $iserror2 = 3;
+                } else {
+                    $asset_id_match[] = $asset_id;
+                }
+            }
+
+            if($iserror2 == 3||$iserror2 == 2)
+            {
+                $lengthAsset_id_notOwners = count($asset_id_notOwners);
+                $lengthAssetTagNotFound = count($assetTagNotFound);
+                $iserror = 7;
+                if($lengthAsset_id_notOwners >=1)
+                {
+                    foreach($asset_id_notOwners as $asset_id_notOwner)
+                    {
+                        $asset_notOwner = Asset::findOrFail($asset_id_notOwner);
+                        $asset_tag_notOwners[] = $asset_notOwner->asset_tag;
+    
+                    }
+                }
+                else
+                {
+                    $asset_tag_notOwners = [];
+                } 
+           
+                $error = [
+                    'iserror' => $iserror,
+                    'lengthAsset_id_notOwners' => $lengthAsset_id_notOwners,
+                    'asset_tag_notOwners' =>$asset_tag_notOwners,
+                    'lengthAssetTagNotFound' => $lengthAssetTagNotFound,
+                    'assetTagNotFound' =>$assetTagNotFound
+                ];
+                return response()->json($error); 
+            }
+       
+
+            foreach ($asset_id_match as $asset_id) {
+                $asset = Asset::findOrFail($asset_id);
+                $asset_tags[] = $asset->asset_tag;
+                $asset_names[] = $asset->name;
+                $asset_notes[] = $asset->notes;
+            }
+
+            if($iserror == 0)
+            {
+                $length = count($asset_tags);
+                $typeHanoverPaper = 0;
 
                 $data = [
-
+    
                     'fullNameUserTarget' => $fullNameUserTarget,
                     'iserror' => $iserror,
                     'targetUserID' => $targetUserID,
@@ -368,19 +542,19 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
                     'asset_tags' => $asset_tags,
                     'asset_names' => $asset_names,
                     'asset_notes' => $asset_notes,
-                    'numberOfReport' => $numberOfReport
+                    'numberOfReport' => $numberOfReport,
+                    'typeHanoverPaper' =>$typeHanoverPaper
                 ];
-            
-                return response()->json($data);       
+                return response()->json($data);
             }
-            
-            } catch (ModelNotFoundException $e) {
-                return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
-            }
-            
+                    
+
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return redirect()->route('hardware.bulkcheckout.show')->with('error', $e->getErrors());
+        }
     }
-
-
 
 
     public function uploadPdf(Request $request)

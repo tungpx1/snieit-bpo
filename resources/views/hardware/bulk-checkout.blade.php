@@ -273,6 +273,7 @@
             </div>
           </div>
 
+          <div id="assetsAssignedPartial">
           @include ('partials.forms.edit.asset-select', [
             'translated_name' => trans('general.assets'),
             'fieldname' => 'selected_assets[]',
@@ -280,6 +281,8 @@
             'asset_status_type' => 'RTD',
             'select_id' => 'assigned_assets_select',
           ])
+          </div>
+
 
           <!-- <div class="form-group">
               <label for="" class="col-md-3 control-label">Bulk serial assets</label>
@@ -288,7 +291,7 @@
               </div>
           </div> -->
 
-          <div class="form-group">
+          <div class="form-group" id="bulk_asset_tag">
               <label for="" class="col-md-3 control-label">Bulk asset tag assets</label>
               <div class="col-md-8" style="padding-top:7px;">
                   <textarea class="form-control" name="bulk_assettag_assets"></textarea>
@@ -438,7 +441,7 @@
       </div> <!--./box-body-->
       <div class="box-footer">
         <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>
-        <button type="submit" class="btn btn-primary pull-right"><i class="fas fa-check icon-white" aria-hidden="true"></i> {{ trans('general.checkout') }}</button>
+        <button type="submit" class="btn btn-success pull-right"  id="checkout-button"><i class="fa fa-check icon-white" aria-hidden="true"></i> {{ trans('general.checkout') }}</button>
       </div>
     </div>
       </form>
@@ -461,15 +464,22 @@
 @section('moar_scripts')
 @include('partials/assets-assigned')
 <script>
+
+$('#checkout-button').prop('disabled', true);
+
     $(document).ready(() => {
         $('input[name=checkout_to_type]').on("change", e => {
             if ($(e.target).val() === 'user') {
                 $('#preview-handover-paper').show();
             } else {
                 $('#preview-handover-paper').hide();
+                $('#checkout-button').prop('disabled', false);
+
             }
         })
     })
+
+
 
 $('#myModal').on('shown.bs.modal', function () {
         var wrapper = document.getElementById("signature-pad"),
@@ -510,6 +520,8 @@ $('#myModal').on('shown.bs.modal', function () {
     });
 
 
+
+
 $('#preview-handover-paper').on('click', function() {
     // Tạo một form mới
     var form = $('<form>', {
@@ -534,7 +546,6 @@ $('#preview-handover-paper').on('click', function() {
         });
         // Thêm trường input vào form mới
         form.append(input);
-        console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
 
     });
 
@@ -545,7 +556,6 @@ $('#preview-handover-paper').on('click', function() {
         data: form.serialize(), // Serialize dữ liệu của form mới để gửi
         success: function(response) {
             // Xử lý khi yêu cầu thành công
-            console.log('Code error:',response.iserror);
 
             if(response.iserror == 5)
             {
@@ -645,13 +655,15 @@ $('#preview-handover-paper').on('click', function() {
             }else if(response.iserror == 0)
             {
                 $('#myModal').modal('show');
-                console.log(response.fullNameUserTarget);
-                console.log(response.asset_ids_arr);
-                console.log(response.asset_tags);
-                console.log(response.asset_tags[0]);
+
                 assetId = response.asset_ids_arr[0];
                 checkoutUserID = response.checkoutUserID;
                 targetID = response.targetUserID;
+                typeHanoverPaper = response.typeHanoverPaper;
+ 
+                $("#assetsAssignedPartial").prop('disabled', true);
+                $("#bulk_asset_tag").prop('disabled', true);
+               
 
                 $('#dynamicTable tr').not(':first').remove();
 
@@ -698,6 +710,8 @@ $('#upload-PDF').on('click', function(event) {
     formData.append('assetId', assetId);
     formData.append('checkoutUser', checkoutUserID);
     formData.append('target', targetID);
+    formData.append('typeHanoverPaper', typeHanoverPaper);
+
 
     // Lấy file từ trường input file và thêm vào FormData
     var fileInput = document.getElementById('pdf-file');
@@ -725,6 +739,7 @@ $('#upload-PDF').on('click', function(event) {
                 window.open(Linkfile, '_blank');
             }
             $('#checkout-button').prop('disabled', false);
+
             // $('#checkout-form').submit();
 
 

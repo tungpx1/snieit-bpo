@@ -208,16 +208,6 @@
                             </div>
                         </div>
 
-                        <!-- Preview handover Paper
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"></label>
-                            <div class="col-md-8">
-                            <div class="checkbox">
-                          <input type="checkbox" id="disable-submit" onchange="toggleSubmitButton()"> 
-                        <label for="disable-submit">The recipient is not ready to sign</label>
-                        </div>
-                            </div>
-                        </div> -->
 
                                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-xl" role="document">

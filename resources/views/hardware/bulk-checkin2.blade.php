@@ -8,10 +8,216 @@
 
 {{-- Page content --}}
 @section('content')
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <style>
-        .input-group {
-            padding-left: 0px !important;
+ .input-group {
+    padding-left: 0px !important;
+  }
+
+  .m-signature-pad--body {
+            border-style: solid;
+            border-color: grey;
+            border-width: thin;
         }
+        .modal-footer {
+                display: none;
+            }
+            .modal-dialog {
+                width: 21cm;
+                height: 29.7cm;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            .modal-content * {
+                visibility: visible;
+            }
+            .modal-content {
+                height: 100%;
+                border: none;
+                box-shadow: none;
+            }
+            h1 {
+            text-align: center;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+        .signatures div {
+            text-align: center;
+            width: 30%;
+        }
+        .modal-dialog {
+            width: 21cm; /* Kích thước chiều rộng của trang A4 */
+            height: 29.7cm; /* Kích thước chiều cao của trang A4 */
+            max-width: 100%; /* Đảm bảo modal không vượt quá kích thước trang A4 */
+            margin: auto; /* Canh giữa modal trên trang */
+            }
+
+        .m-signature-pad--body {
+            border: solid 1px gray;
+            border-radius:4px;
+            height:200px;
+            padding: 0px !important;
+          
+        }
+        .m-signature-pad--title--signer {
+            position: absolute;
+            right: 20px;
+            opacity:0.5;
+            top:40px;
+        }
+        .m-signature-pad--title--signer2 {
+            position: absolute;
+            left: 20px;
+            opacity:0.5;
+            top:40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+
+        @media print {
+
+        body * {
+        visibility: hidden;
+        }
+        #clear_button, #upload-PDF, #print-button,#pdf-file {
+        display: none;
+        }
+        .modal-footer {
+            display: none;
+        }
+        .modal-dialog {
+            width: 21cm;
+            height: 29.7cm;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .modal-content * {
+            visibility: visible;
+        }
+        .modal-content {
+            height: 100%;
+            border: none;
+            box-shadow: none;
+        }
+
+        #clear_button, #upload-PDF, #print-button,#gerarPDF {
+        display: none;
+        }
+        }
+
+        #errodModal {
+        .modal-confirm {		
+		color: #434e65;
+		width: 525px;
+		margin: 30px auto;
+        }
+        .th {
+            text-align: center; /* Căn giữa nội dung trong cột */
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            background-color: #f2f2f2;
+
+        }
+
+        .td {
+            text-align: center; /* Căn giữa nội dung trong cột */
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .modal-confirm .modal-content {
+            padding: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+        .modal-confirm .modal-header {
+            background: #e85e6c;
+            border-bottom: none;   
+            position: relative;
+            text-align: center;
+            margin: -20px -20px 0;
+            border-radius: 5px 5px 0 0;
+            padding: 5px;
+        }
+        .modal-confirm h4 {
+            text-align: center;
+            font-size: 36px;
+            margin: 10px 0;
+        }
+        .modal-confirm .form-control, .modal-confirm .btn {
+            min-height: 40px;
+            border-radius: 3px; 
+        }
+        .modal-confirm .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #fff;
+            text-shadow: none;
+            opacity: 0.5;
+        }
+        .modal-confirm .close:hover {
+            opacity: 0.8;
+        }
+        .modal-confirm .icon-box {
+            color: #fff;		
+            width: 95px;
+            height: 95px;
+            display: inline-block;
+            border-radius: 50%;
+            z-index: 9;
+            border: 5px solid #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        .modal-confirm .icon-box i {
+            font-size: 58px;
+            margin: -2px 0 0 -2px;
+        }
+        .modal-confirm.modal-dialog {
+            margin-top: 80px;
+        }
+        .modal-confirm .btn {
+            color: #fff;
+            border-radius: 4px;
+            background: #eeb711;
+            text-decoration: none;
+            transition: all 0.4s;
+            line-height: normal;
+            border-radius: 30px;
+            margin-top: 10px;
+            padding: 6px 20px;
+            min-width: 150px;
+            border: none;
+        }
+        .modal-confirm .btn:hover, .modal-confirm .btn:focus {
+            background: #eda645;
+            outline: none;
+        }
+        .trigger-btn {
+            display: inline-block;
+            margin: 100px auto;
+        }
+
+        }
+        
     </style>
     <div class="row">
         <!-- left column -->
@@ -59,8 +265,37 @@
                         </div>
 
 
-                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
+                        <div id="errodModal" class="modal fade">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="icon-box">
+                                        <i class="material-icons">&#xE5CD;</i>
+                                    </div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <h3>Ooops!</h3>	
+                                    <p>Hi guy, Something went wrong. Pleas check again</p>
+                                    <h>List of Items Error</h4>
+                                                    <table id="ErrorTable">
+                                                        <tr>
+                                                            <th>Asset_tag</th>
+                                                            <th>Error Details</th>
+                                                        </tr>
+                                                        <tr>
+
+                                                        </tr>
+                                                        <!-- Add more items here -->
+                                                    </table>
+                                    <button class="btn btn-success" data-dismiss="modal">Try Again</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+
+
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
@@ -159,30 +394,17 @@
                         </div>
                     </div>
 
-                        <!-- <div class="form-group">
-                            <label class="col-md-3 control-label">Export handover paper</label>
-                            <div class="col-md-8" style="padding-top:7px;">
-                                <input type="checkbox" name="export_handover_paper" />
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Export QR Code list</label>
-                            <div class="col-md-8" style="padding-top:7px;">
-                                <input type="checkbox" name="export_qr_code" />
-                            </div>
-                        </div> -->
-
-                </div> <!--./box-body-->
+                </div>
                 <div class="box-footer">
                     <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>
-                    <button type="submit" class="btn btn-success pull-right"><i class="fa fa-check icon-white"></i> Check in</button>
+                    <button type="submit" class="btn btn-success pull-right" id="checkin-button" ><i class="fa fa-check icon-white"></i> Check in</button>
                 </div>
             </div>
             </form>
-        </div> <!--/.col-md-7-->
+        </div>
 
-        <!-- right column -->
+       
         <div class="col-md-5" id="current_assets_box" style="display:none;">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -201,7 +423,7 @@
     @include('partials/assets-assigned')
 
 <script>
-
+    $('#checkin-button').prop('disabled', true);
     $('#myModal').on('shown.bs.modal', function () {
         var wrapper = document.getElementById("signature-pad"),
         canvasWrapper = wrapper.querySelector(".m-signature-pad--body"),
@@ -241,9 +463,6 @@
     });
 
 
-
-
-
 $('#preview-handover-paper').on('click', function() {
     // Tạo một form mới
     var form = $('<form>', {
@@ -268,7 +487,7 @@ $('#preview-handover-paper').on('click', function() {
         });
         // Thêm trường input vào form mới
         form.append(input);
-        console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
+        //console.log("Input Name:", $(this).attr('name'), "Value:", $(this).val());
 
     });
 
@@ -278,8 +497,96 @@ $('#preview-handover-paper').on('click', function() {
         type: form.attr('method'),
         data: form.serialize(), // Serialize dữ liệu của form mới để gửi
         success: function(response) {
-            // Xử lý khi yêu cầu thành công
-            if(response.iserror == 2)
+            console.log(response.iserror);
+
+            if(response.iserror == 7)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < response.lengthAsset_id_notOwners; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + response.asset_tag_notOwners[i] + '</td>' +
+                        '<td>' + 'Assets do not belong to User' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+                for (var i = 0; i < response.lengthAssetTagNotFound; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + response.assetTagNotFound[i] + '</td>' +
+                        '<td>' + 'Assets Not Found' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+            }
+
+            // else if(response.iserror == 6)
+            // {
+            //     $('#errodModal').modal('show');
+            //     $('#ErrorTable tr').not(':first').remove();
+            //     for (var i = 0; i < response.lengthAssetTagNotFound; i++) {
+            //         var newRow = '<tr>' +
+            //             '<td>' + response.assetTagNotFound[i] + '</td>' +
+            //             '<td>' + 'Assets Not Found' + '</td>' + 
+
+            //             '</tr>';
+            //         $('#ErrorTable').append(newRow);
+
+            //     }
+
+            // }
+
+            else if(response.iserror == 5)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose User to checkin!' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+
+            }
+
+            else if(response.iserror == 4)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose Assets to checkin!' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+
+            }
+
+            else if(response.iserror == 3)
+            {
+                $('#errodModal').modal('show');
+                $('#ErrorTable tr').not(':first').remove();
+                for (var i = 0; i < 1; i++) {
+                    var newRow = '<tr>' +
+                        '<td>' + 'Error' + '</td>' +
+                        '<td>' + 'Please choose only option. Assets field or bulk_asset_tag' + '</td>' + 
+
+                        '</tr>';
+                    $('#ErrorTable').append(newRow);
+
+                }
+            }
+
+            else if(response.iserror == 2)
             {
                 $('#errodModal').modal('show');
                 $('#ErrorTable tr').not(':first').remove();
@@ -333,6 +640,7 @@ $('#preview-handover-paper').on('click', function() {
                 assetId = response.asset_ids_arr[0];
                 checkoutUserID = response.checkoutUserID;
                 targetID = response.targetUserID;
+                typeHanoverPaper = response.typeHanoverPaper;
 
                 $('#dynamicTable tr').not(':first').remove();
 
@@ -351,10 +659,10 @@ $('#preview-handover-paper').on('click', function() {
 
                 $('#numberOfReport').text(response.numberOfReport);
                 $('#dateOfHandover').text(response.checkoutDate);
-                $('#handoverTo').text(response.fullNameUserTarget);
-                $('#handoverFrom').text(response.fullNameUserCheckout);
-                $('.m-signature-pad--title--signer').text(response.fullNameUserTarget);
-                $('.m-signature-pad--title--signer2').text(response.fullNameUserCheckout);
+                $('#handoverTo').text(response.fullNameUserCheckout);
+                $('#handoverFrom').text(response.fullNameUserTarget);
+                $('.m-signature-pad--title--signer').text(response.fullNameUserCheckout);
+                $('.m-signature-pad--title--signer2').text(response.fullNameUserTarget);
             }
    
         },
@@ -364,6 +672,61 @@ $('#preview-handover-paper').on('click', function() {
         }
     });
 });
+
+
+    $('#upload-PDF').on('click', function(event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của nút submit
+
+        // Tạo đối tượng FormData
+        var formData = new FormData();
+
+        // Thêm CSRF token vào FormData
+        formData.append('_token', '{{ csrf_token() }}');
+
+        // Thêm các giá trị vào FormData
+        formData.append('assetId', assetId);
+        formData.append('checkoutUser', checkoutUserID);
+        formData.append('target', targetID);
+        formData.append('typeHanoverPaper', typeHanoverPaper);
+
+
+        // Lấy file từ trường input file và thêm vào FormData
+        var fileInput = document.getElementById('pdf-file');
+        if (fileInput.files.length > 0) {
+            var file = fileInput.files[0];
+            formData.append('pdf-file', file);
+        } else {
+            alert('Please select a PDF file to upload.');
+            return;
+        }
+
+        // Gửi FormData qua AJAX
+        $.ajax({
+            url: '{{ route('handover.submit') }}', // URL đến hàm xử lý trong controller
+            type: 'POST',
+            data: formData,
+            contentType: false, // Đặt contentType và processData thành false để gửi FormData
+            processData: false,
+            success: function(response) {
+                // Xử lý khi gửi thành công
+                //console.log(response);
+                var Linkfile = response.filelink;
+                var message = 'View file upload ?';
+                if (confirm(message)) {
+                    window.open(Linkfile, '_blank');
+                }
+                $('#checkin-button').prop('disabled', false);
+                // $('#checkout-form').submit();
+
+
+            },
+            error: function(xhr, status, error) {
+                // Xử lý khi có lỗi
+                console.error('Error:', error);
+                // Hiển thị thông báo lỗi tại đây
+            }
+        });
+    });
 
 </script>
 @stop

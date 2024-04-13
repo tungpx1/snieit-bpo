@@ -8,8 +8,10 @@ use App\Helpers\Helper;
 use App\Http\Controllers\CheckInOutRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
+use App\Models\User;
 use App\Models\CheckoutAcceptance;
 use App\Models\Setting;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\View\Label;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -600,7 +602,46 @@ class BulkAssetsController extends Controller
 
     public function bulkCheckin2(Request $request)
     {
-        
+        try{
+
+        $checkUser = User::find($request->assigned_user);
+
+        $asset_ids = [];
+        $asset_ids = array_filter($request->get('assets'));
+
+
+        if ($request->get('bulk_assettag_assets')) {
+            $errorTagsUndeploy = [];
+            $bulkAssetTags = $request->get('bulk_assettag_assets');
+            $assetTags = preg_split('/\r\n|\r|\n/', $bulkAssetTags, -1, PREG_SPLIT_NO_EMPTY);         
+            $asset_ids = [];
+            foreach ($assetTags as $tag) {
+                $asset = Asset::where('asset_tag', trim($tag))->first();
+                if (!$asset) {
+                    $assetTagNotFound[] = $tag;
+                    $iserror2 = 2;
+                }else {
+                    $asset_ids[] = $asset->id;
+                }
+            }
+        }
+   
+
+        Asset::whereIn('id', $asset_ids)->update([
+            'status_id' => 2, // Ready to deployed
+            'assigned_to' => null,
+        ]);
+        $assets = Asset::whereIn('id', $request->assets)->get();
+        foreach ($assets as $key => $asset) {
+            $asset->logCheckin($checkUser, "Bulk checkin");
+            $assets[$key]['sub_assets'] = Asset::where('assigned_to', $asset->id)->where('assigned_type', 'App\Models\Asset')->get();
+        }
+        return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.checkin.success'));        
+        }
+        catch (ModelNotFoundException $e) {
+            return redirect()->to("hardware/bulkcheckout")->with('error', $e->getErrors());
+        }
+
     }
 
 

@@ -195,7 +195,7 @@ Route::group(
     )->name('hardware.bulkcheckin.show');
 
         Route::post('bulkcheckin2',
-        [BulkAssetsController::class, 'bulcheckin2']
+        [BulkAssetsController::class, 'bulkcheckin2']
     )->name('hardware.bulkcheckin2');
 
         Route::post('bulkcheckout',
