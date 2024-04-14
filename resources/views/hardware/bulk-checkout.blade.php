@@ -343,9 +343,8 @@
                             <div class="modal-content">
                                 <div class="modal-body">
                                     <div id="modal">
-                                        <h1 style="text-align: center;">CÔNG TY TNHH SGS VIỆT NAM</h1>
-                                        <p style="text-align: center;">Tầng 7, 9, 10 Toà nhà VTC 18 Tam Trinh, Phường
-                                            Minh Khai, Quận Hai Bà Trưng, Hà Nội</p>
+                                        <h1 style="text-align: center;">{{ env('Company_name') }}</h1>
+                                        <p style="text-align: center;">{{ env('Company_Addr') }}</p>
                                         <h2 style="text-align: center;">Handover Paper</h2>
                                         <p style="text-align: center;">Số: <span id="numberOfReport"></span>
                                         </p>
