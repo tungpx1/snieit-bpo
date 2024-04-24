@@ -710,7 +710,7 @@ $('#preview-handover-paper').on('click', function() {
                 // Xử lý khi gửi thành công
                 //console.log(response);
                 var Linkfile = response.filelink;
-                var message = 'View file upload ?';
+                var message = 'Upload file successfully. View file uploaded ?';
                 if (confirm(message)) {
                     window.open(Linkfile, '_blank');
                 }

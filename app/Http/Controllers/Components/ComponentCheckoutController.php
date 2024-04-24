@@ -88,10 +88,13 @@ class ComponentCheckoutController extends Controller
         $settings = \App\Models\Setting::getSettings();
         if ($settings->full_multiple_companies_support ){
             //exclude CPU Laptop Compoents
-            if ($component->company_id != $asset->company_id && $category->name == 'CPU Laptop') {
-            } else {
+            if ($component->company_id != $asset->company_id) {
+                if($category->name == 'CPU Laptop')
+                {
+
+                } else
                 return redirect()->route('components.index')->with('error', trans('admin/components/message.checkout.asset_missmatch'));
-            }              
+            }             
         }    
 
         // Update the component data
