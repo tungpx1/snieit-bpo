@@ -7,9 +7,9 @@ services:
       dockerfile: Dockerfile.alpine
     container_name: snipeit
     ports:
-    - "8084:80"
+    - "80:80"
     volumes:
-    - logs:/var/www/html/storage/logs
+    #- logs:/var/www/html/storage/logs
     - source:/var/www/html
     depends_on:
     - snipedb
@@ -22,7 +22,7 @@ services:
   snipedb:
     image: mariadb:10.6.4-focal
     volumes:
-    - db:/var/lib/mysql
+    #- db:/var/lib/mysql
     env_file:
     - .env.docker
     networks:
@@ -45,23 +45,11 @@ services:
 
 
 volumes:
-  db:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/tungpx/db
-      o: bind
-  logs:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/tungpx/logs
-      o: bind
   source:
     driver: local
     driver_opts:
       type: none
-      device: /home/tungpx/source
+      device: ../source
       o: bind
 
 networks:
