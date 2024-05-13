@@ -48,7 +48,10 @@ class GoogleAuthController extends Controller
         }
 
 
-        $user = User::where('username', $socialUser->getEmail())->first();
+        //$user = User::where('username', $socialUser->getEmail())->first();
+        $user = User::where('username', $socialUser->getEmail())
+            ->orWhere('email', $socialUser->getEmail())
+            ->first();
 
 
         if ($user) {
