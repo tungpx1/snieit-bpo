@@ -496,11 +496,13 @@ $('#upload-PDF').on('click', function(event) {
 
     // Thêm CSRF token vào FormData
     formData.append('_token', '{{ csrf_token() }}');
-
+    var typeHanoverPaper = 1;
     // Thêm các giá trị vào FormData
     formData.append('assetId', assetId);
     formData.append('checkoutUser', checkoutUserID);
     formData.append('target', targetID);
+    formData.append('typeHanoverPaper', typeHanoverPaper);
+
 
     // Lấy file từ trường input file và thêm vào FormData
     var fileInput = document.getElementById('pdf-file');

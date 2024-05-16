@@ -136,7 +136,6 @@ Route::post('/preview-bulcheckout', [HandoverPaperController::class, 'previewHan
 Route::post('/preview-bulcheckin', [HandoverPaperController::class, 'previewHandoverPaperBulkcheckin'])->name('preview.bulkcheckin');
 
 Route::post('/handover-submit', [HandoverPaperController::class, 'submitHandover'])->name('handover.submit');
-// Route::post('/handover-submit', [HandoverPaperController::class, 'submitHandoverCheckin'])->name('handover.submitCheckin');
 
 
 Route::get('/get-company/{userId}', 'UserController@getCompanyByUserId');
