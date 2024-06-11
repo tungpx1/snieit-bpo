@@ -91,11 +91,11 @@ class HandoverPaperController extends Controller
         
 
             $now = new \DateTime('NOW');
-            $numberOfReport = $now->format('dmy');
+            $numberOfReport = $now->format('YmdHis');
             // $numberOfReport = "{$numberOfReport}-{$targetuser->employee_num}";
-            $numberOfReport = "SGS-{$numberOfReport}-{$targetuser->employee_num}";
+            $numberOfReport = "{$numberOfReport}-{$targetuser->employee_num}";
 
-            $nameOfFile = "checkout-{$numberOfReport}-{$admin->employee_num}-{$targetuser->employee_num}";
+            $nameOfFile = "GearInc-{$numberOfReport}-{$admin->employee_num}-{$targetuser->employee_num}";
             $msg = ('Create handover paper successful.');
 
             $path = $file->storeAs('temp',$nameOfFile);  
@@ -137,11 +137,11 @@ class HandoverPaperController extends Controller
  
 }
   
-private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf') 
+private function uploadFileToGoogleDrive($filePath, $mimeType = 'application/pdf') 
 {
     // Tạo một đối tượng client
     $client = new Google_Client();
-    $client->setAuthConfig(storage_path('snipeit.json'));
+    $client->setAuthConfig(storage_path('snipeit2.json'));
     $client->addScope(Google_Service_Drive::DRIVE);
 
     // Tạo một đối tượng service
@@ -149,14 +149,20 @@ private function uploadFileToGoogleDrive($fileName, $mimeType = 'application/pdf
 
     // Tạo một đối tượng file
     $file = new Google_Service_Drive_DriveFile();
+
+    $fileName = basename($filePath);
+
     $file->setName($fileName);
-    $file->setDescription('Your file description');
+    $file->setDescription('Handover Paper');
     $file->setMimeType($mimeType);
-    $file->setParents(['1VRB1JFIofxW7dtLiXqjGLoF9abi7oAU3']); // Set the parent folder
+    $folderId = env('GOOGLE_DRIVE_FOLDER_ID');
+    //$file->setParents(['1HaNEr8Y6gVfsu4eH2mJng2fbQCCw1x5U']); // Set the parent folder
+    $file->setParents([$folderId]); // Set the parent folder
+    
 
     // Tải file lên Google Drive
     $result = $service->files->create($file, [
-        'data' => file_get_contents(storage_path($fileName)),
+        'data' => file_get_contents(storage_path($filePath)),
         'mimeType' => $mimeType,
         'uploadType' => 'multipart'
     ]);
