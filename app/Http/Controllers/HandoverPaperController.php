@@ -141,7 +141,7 @@ private function uploadFileToGoogleDrive($filePath, $mimeType = 'application/pdf
 {
     // Tạo một đối tượng client
     $client = new Google_Client();
-    $client->setAuthConfig(storage_path('snipeit2.json'));
+    $client->setAuthConfig(storage_path('snipeit.json'));
     $client->addScope(Google_Service_Drive::DRIVE);
 
     // Tạo một đối tượng service
